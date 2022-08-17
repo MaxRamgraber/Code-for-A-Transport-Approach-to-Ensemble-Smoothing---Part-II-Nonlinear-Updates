@@ -3,6 +3,17 @@ import matplotlib
 import matplotlib.pyplot as plt
 import turbo_colormap
 
+plt.rc('font', family='serif') # sans-serif
+plt.rc('text', usetex=True)
+
+plt.rcParams['text.latex.preamble'] = [
+       r'\usepackage{siunitx}',   # i need upright \micro symbols, but you need...
+       r'\sisetup{detect-all}',   # ...this to force siunitx to actually use your fonts
+       r'\usepackage{helvet}',    # set the normal font here
+       r'\usepackage{sansmath}',  # load up the sansmath so that math -> helvet
+       r'\sansmath'               # <- tricky! -- gotta actually tell tex to use!
+]  
+
 cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", 
     ["xkcd:midnight blue",
      "xkcd:sky blue",
@@ -178,7 +189,7 @@ for t in np.arange(1,T,1):
 plt.title(r'$\bf{A}$: joint analysis smoother', loc='left', fontsize=11)
 plt.axis('equal')
 
-plt.ylabel('conditioned on data', labelpad=-25)
+plt.ylabel('conditioned on data', labelpad=-15)
 ax = plt.gca()
 ax.set_xticks([1,T-2])
 ax.set_xticklabels(['',''])
@@ -363,7 +374,7 @@ plt.title(r'$\bf{D}$: filter', loc='left', fontsize=11)
 plt.axis('equal')
 
 plt.xlabel('state block', labelpad=-10)
-plt.ylabel('conditioned on data', labelpad=-25)
+plt.ylabel('conditioned on data', labelpad=-15)
 ax = plt.gca()
 ax.set_xticks([1,T-1])
 ax.set_xticklabels(['$\mathbf{x}_{1}$','$\mathbf{x}_{t}$'])

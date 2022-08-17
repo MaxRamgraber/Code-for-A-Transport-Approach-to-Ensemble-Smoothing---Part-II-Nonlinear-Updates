@@ -9,6 +9,17 @@ from matplotlib.lines import Line2D
 from matplotlib import colors
 import os
 
+plt.rc('font', family='serif') # sans-serif
+plt.rc('text', usetex=True)
+
+plt.rcParams['text.latex.preamble'] = [
+       r'\usepackage{siunitx}',   # i need upright \micro symbols, but you need...
+       r'\sisetup{detect-all}',   # ...this to force siunitx to actually use your fonts
+       r'\usepackage{helvet}',    # set the normal font here
+       r'\usepackage{sansmath}',  # load up the sansmath so that math -> helvet
+       r'\sansmath'               # <- tricky! -- gotta actually tell tex to use!
+]  
+
 root_directory = os.path.dirname(os.path.realpath(__file__))
     
 plt.close('all')
@@ -40,9 +51,10 @@ for i,N in enumerate(Ns):
     RMSEs_EnKF      = np.zeros((repeats,T))
     RMSEs_EnKF_sa   = np.zeros((repeats,T))
     
-    colors1 = ['xkcd:orangish red','xkcd:sky blue','xkcd:grass green','xkcd:tangerine']
+    colors1 = ['xkcd:orangish red','xkcd:cerulean','xkcd:grass green','xkcd:tangerine']
     colors2 = ['xkcd:crimson','xkcd:cobalt','xkcd:pine','xkcd:deep orange']
-    
+    colors2 = ['xkcd:tangerine','xkcd:sky blue','xkcd:pine','xkcd:deep orange']
+
     # Load in the results from every repeat directory
     for rep in range(repeats):
         
@@ -68,43 +80,42 @@ for i,N in enumerate(Ns):
     MCSE_N_EnKF[i]      = np.std(RMSEs_EnKF)/np.sqrt(T*repeats)*1.96
     MCSE_N_EnKF_sa[i]   = np.std(RMSEs_EnKF_sa)/np.sqrt(T*repeats)*1.96
     
-    
-plt.plot(
-    Ns,
-    RMSE_N_sparse,
-    color = colors1[0],
-    label   = 'EnTF (sparse)',
-    marker  = '+')
-
 plt.plot(
     Ns,
     RMSE_N_dense,
-    color = colors1[1],
+    color = colors1[0],
     label   = 'EnTF (dense)',
-    marker  = 'x',
-    ls      = '--',
-    zorder  = 10)
-
+    marker  = 'o')
 
 plt.plot(
     Ns,
     RMSE_N_EnKF,
-    color = colors1[2],
+    color = colors1[1],
     label   = 'EnKF (empirical)',
-    marker  = '+')
+    ls      = '--',
+    zorder  = 10,
+    markersize = 10,
+    marker  = 'x')
+
+    
+plt.plot(
+    Ns,
+    RMSE_N_sparse,
+    color = colors2[0],
+    label   = 'EnTF (sparse)',
+    marker  = 's')
 
 plt.plot(
     Ns,
     RMSE_N_EnKF_sa,
-    color = colors1[3],
+    color = colors2[1],
     label   = 'EnKF (semi-empirical)',
-    marker  = 'x')
-
+    marker  = 'v')
 
 plt.legend(frameon = False)
 
 plt.xlabel('ensemble size (log scale)')
-plt.ylabel('ensemble mean RMSE')
+plt.ylabel('time-average RMSE')
 
 ylim = plt.gca().get_ylim()
 plt.ylim([ylim[0],0.8])

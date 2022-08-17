@@ -6,6 +6,17 @@ import copy
 import pickle
 from matplotlib.patches import Patch
 from matplotlib.lines import Line2D
+
+plt.rc('font', family='serif') # sans-serif
+plt.rc('text', usetex=True)
+
+plt.rcParams['text.latex.preamble'] = [
+       r'\usepackage{siunitx}',   # i need upright \micro symbols, but you need...
+       r'\sisetup{detect-all}',   # ...this to force siunitx to actually use your fonts
+       r'\usepackage{helvet}',    # set the normal font here
+       r'\usepackage{sansmath}',  # load up the sansmath so that math -> helvet
+       r'\sansmath'               # <- tricky! -- gotta actually tell tex to use!
+]  
     
 plt.close('all')
 
@@ -16,7 +27,14 @@ maxlag      = 100
 Ns          = [50,100,175,250,375,500,750,1000]
 repeats     = 100
 
-colors      = ['xkcd:grass green','xkcd:cerulean','xkcd:orangish red','xkcd:grass green','xkcd:cerulean','xkcd:orangish red']
+colors      = [
+    'xkcd:grass green',
+    'xkcd:cerulean',
+    'xkcd:orangish red',
+    'xkcd:grass green',
+    'xkcd:cerulean',
+    'xkcd:orangish red']
+markers     = ['o','x','v','o','x','v']
 
 plt.figure(figsize=(12,8))
 gs  = GridSpec(nrows = 2, ncols = 2, height_ratios=[1,1], hspace = 0.4)
@@ -37,6 +55,14 @@ linestyles  = [
     '--',
     '--',
     '--']
+
+# dct_res     = {
+#     'TM_BW'     : [],
+#     'TM_BW_mp'  : [],
+#     'TM_JA'     : [],
+#     'EnRTS'     : [],
+#     'EnRTS_mp'  : [],
+#     'EnKS'      : []}
 
 dct_res     = {
     'EnRTS'     : [],
@@ -73,10 +99,12 @@ for N in Ns:
         RMSE_list   = output_dictionary['RMSE_list']
         
         RMSE_list_collate.append(np.mean(RMSE_list))
-        MCSE_list_collate.append(np.std(RMSE_list)/np.sqrt(T)*1.96)
+        MCSE_list_collate += copy.deepcopy(RMSE_list)
         
         quantiles.append(
             np.nanmean(output_dictionary['X_a'],axis=0))
+        
+    MCSE_list_collate = np.std(RMSE_list)/np.sqrt(T*repeats)*1.96
         
     dct_res['EnTF'].append(np.mean(RMSE_list_collate))
     dct_res_MCSE['EnTF'].append(np.mean(MCSE_list_collate))
@@ -90,17 +118,20 @@ for N in Ns:
 plt.plot(
     Ns,
     dct_res['EnTF'],
-    marker      = "x",
+    marker      = "s",
     color       = "xkcd:grey",
     alpha       = 1,
+    zorder      = 10,
     label       = "EnTF / EnKF")
 plt.fill(
     list(Ns) + list(np.flip(Ns)),
     list(np.asarray(dct_res['EnTF']) + np.asarray(dct_res_MCSE['EnTF'])) + list(np.flip(np.asarray(dct_res['EnTF']) - np.asarray(dct_res_MCSE['EnTF']))),
     color       = "xkcd:grey",
-    alpha       = 0.5,
-    edgecolor   = "None",
-    zorder      = -2)
+    alpha       = 0.25,
+    zorder      = 5,
+    edgecolor   = "None")
+
+# raise Exception
 
 for idx,strng in enumerate(['EnRTS','EnRTS_mp','EnKS']): #enumerate(['TM_BW','TM_BW_mp','TM_JA','EnRTS','EnRTS_mp','EnKS']):
     
@@ -122,14 +153,19 @@ for idx,strng in enumerate(['EnRTS','EnRTS_mp','EnKS']): #enumerate(['TM_BW','TM
             RMSE_list   = output_dictionary['RMSE_list']
             
             RMSE_list_collate.append(np.mean(RMSE_list))
-            MCSE_list_collate.append(np.std(RMSE_list)/np.sqrt(T)*1.96)
+            MCSE_list_collate   += copy.deepcopy(RMSE_list)
             
             if idx > 0:
                 quantiles.append(
                     np.nanmean(output_dictionary['X_s_q'],axis=0))
             
         dct_res[strng].append(np.mean(RMSE_list_collate))
+        
+        MCSE_list_collate = np.std(MCSE_list_collate)/np.sqrt(T*repeats)*1.96
+        
         dct_res_MCSE[strng].append(np.mean(MCSE_list_collate))
+        
+        
         
         if idx > 0:
             quantiles    = np.mean(
@@ -138,32 +174,33 @@ for idx,strng in enumerate(['EnRTS','EnRTS_mp','EnKS']): #enumerate(['TM_BW','TM
     
         if idx > 0:
             dct_lag_quantiles[strng].append(copy.copy(quantiles))
+            
+            
 
     plt.plot(
         Ns,
         dct_res[strng],
-        marker      = "x",
         color       = colors[idx],
         linestyle   = linestyles[idx],
+        marker      = markers[idx],
+        zorder      = 10,
         alpha       = 1,
         label       = labels[idx])
     plt.fill(
         list(Ns) + list(np.flip(Ns)),
         list(np.asarray(dct_res[strng]) + np.asarray(dct_res_MCSE[strng])) + list(np.flip(np.asarray(dct_res[strng]) - np.asarray(dct_res_MCSE[strng]))),
         color       = colors[idx],
-        alpha       = 0.5,
+        alpha       = 0.25,
         edgecolor   = "None",
-        zorder      = -2)
+        zorder      = 5)
     
-    
-    
-        
+ 
 plt.legend(loc='upper right',frameon=False)
 plt.gca().set_xticks(Ns)
 plt.gca().set_xticklabels(Ns)
 
 plt.xlabel('ensemble size')
-plt.ylabel('average ensemble RMSE')
+plt.ylabel('time-average RMSE')
 
 
 plt.subplot(gs[1,:])
@@ -207,7 +244,7 @@ plt.fill(
     list(q05) + list(np.flip(q25)),
     color       = "xkcd:cerulean",
     alpha       = 0.2,
-    label       = "BW-EnTS (5% - 95%)",
+    label       = "BW-EnTS ($5$\% - $95$\%)",
     edgecolor   = "None",
     zorder      = -5)
 
@@ -215,7 +252,7 @@ plt.fill(
     list(np.arange(450,550,1)) + list(np.flip(np.arange(450,550,1))),
     list(q25) + list(np.flip(q50)),
     color       = "xkcd:cerulean",
-    label       = "BW-EnTS (25% - 75%)",
+    label       = "BW-EnTS ($25$\% - $75$\%)",
     alpha       = 0.5,
     edgecolor   = "None",
     zorder      = -5)
@@ -224,8 +261,9 @@ plt.plot(
     np.arange(450,550,1),
     q50,
     color       = "xkcd:cerulean",
-    label       = "BW-EnTS (50%)",
+    label       = "BW-EnTS ($50$\%)",
     alpha       = 1)
+
 
 RMSEs   = dct_EnRTS['X_EnRTS'][450:550,:,:] - dct_EnRTS['synthetic_truth'][450:550,:][:,np.newaxis,:]
 RMSEs   = np.mean(RMSEs**2,axis = -1)
@@ -245,14 +283,14 @@ plt.fill(
     color       = "xkcd:grass green",
     alpha       = 0.2,
     edgecolor   = "None",
-    label       = "EnRTSS (5% - 95%)",
+    label       = "EnRTSS ($5$\% - $95$\%)",
     zorder      = -5)
 
 plt.fill(
     list(np.arange(450,550,1)) + list(np.flip(np.arange(450,550,1))),
     list(q25) + list(np.flip(q50)),
     color       = "xkcd:grass green",
-    label       = "EnRTSS (25% - 75%)",
+    label       = "EnRTSS ($25$\% - $75$\%)",
     alpha       = 0.5,
     edgecolor   = "None",
     zorder      = -5)
@@ -261,7 +299,7 @@ plt.plot(
     np.arange(450,550,1),
     q50,
     color       = "xkcd:grass green",
-    label       = "EnRTSS (50%)",
+    label       = "EnRTSS ($50$\%)",
     alpha       = 1,
     zorder      = -3)
 
@@ -281,22 +319,24 @@ plt.fill(
     edgecolor   = "None",
     zorder      = -5)
 
+# plt.legend(frameon=False,ncol=2)
+
 from matplotlib.patches import Patch
 from matplotlib.lines import Line2D
 
 legend_elements = [
-    Line2D([0], [0], color='xkcd:grass green', lw=1, label='EnRTSS (50%)'),
-    Patch(facecolor='xkcd:grass green', edgecolor='None', alpha = 0.5, label='EnRTSS (25% - 75%)'),
-    Patch(facecolor='xkcd:grass green', edgecolor='None', alpha = 0.2, label='EnRTSS (5% - 95%)'),
-    Line2D([0], [0], color='xkcd:cerulean', lw=1, label='BW-EnTS (50%)'),
-    Patch(facecolor='xkcd:cerulean', edgecolor='None', alpha = 0.5, label='BW-EnTS (25% - 75%)'),
-    Patch(facecolor='xkcd:cerulean', edgecolor='None', alpha = 0.2, label='BW-EnTS (5% - 95%)')]
+    Line2D([0], [0], color='xkcd:grass green', lw=1, label='EnRTSS ($50$\%)'),
+    Patch(facecolor='xkcd:grass green', edgecolor='None', alpha = 0.5, label='EnRTSS ($25$\% - $75$\%)'),
+    Patch(facecolor='xkcd:grass green', edgecolor='None', alpha = 0.2, label='EnRTSS ($5$\% - $95$\%)'),
+    Line2D([0], [0], color='xkcd:cerulean', lw=1, label='BW-EnTS ($50$\%)'),
+    Patch(facecolor='xkcd:cerulean', edgecolor='None', alpha = 0.5, label='BW-EnTS ($25$\% - $75$\%)'),
+    Patch(facecolor='xkcd:cerulean', edgecolor='None', alpha = 0.2, label='BW-EnTS ($5$\% - $95$\%)')]
 
 
 plt.legend(handles=legend_elements, loc='upper right',frameon=False,ncol = 2)
 
 plt.xlabel("time steps")
-plt.ylabel("ensemble RMSE")
+plt.ylabel("ensemble error quantiles")
 
 plt.savefig('linear_L63_results_line.png',dpi=600,bbox_inches='tight')
 plt.savefig('linear_L63_results_line.pdf',dpi=600,bbox_inches='tight')
