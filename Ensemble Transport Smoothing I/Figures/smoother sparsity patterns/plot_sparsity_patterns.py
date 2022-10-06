@@ -111,7 +111,7 @@ plt.gca().axis("off")
 
 plt.subplot(gs[0,0])
 
-plt.title(r'$\bf{A}$: dense EnTS (ordering A)', loc='left', fontsize=10)
+plt.title(r'$\bf{A}$: dense EnTS (backward-in-time)', loc='left', fontsize=10)
 
 ax  = plt.gca()
 
@@ -154,7 +154,7 @@ plt.axis('off')
 
 plt.subplot(gs[0,1])
 
-plt.title(r'$\bf{B}$: sparse EnTS (ordering A)', loc='left', fontsize=10)
+plt.title(r'$\bf{B}$: sparse EnTS (backward-in-time)', loc='left', fontsize=10)
 
 ax  = plt.gca()
 
@@ -202,7 +202,7 @@ plt.axis('off')
 
 plt.subplot(gs[0,2])
 
-plt.title(r'$\bf{C}$: separated EnTS (ordering A)', loc='left', fontsize=10)
+plt.title(r'$\bf{C}$: separated EnTS (backward-in-time)', loc='left', fontsize=10)
 
 ax  = plt.gca()
 
@@ -301,7 +301,7 @@ plt.axis('off')
 
 plt.subplot(gs[1,0])
 
-plt.title(r'$\bf{D}$: dense EnTS (ordering B)', loc='left', fontsize=10)
+plt.title(r'$\bf{D}$: dense EnTS (forward-in-time)', loc='left', fontsize=10)
 
 ax  = plt.gca()
 
@@ -344,7 +344,7 @@ plt.axis('off')
 
 plt.subplot(gs[1,1])
 
-plt.title(r'$\bf{E}$: sparse EnTS (ordering B)', loc='left', fontsize=10)
+plt.title(r'$\bf{E}$: sparse EnTS (forward-in-time)', loc='left', fontsize=10)
 
 ax  = plt.gca()
 
@@ -393,7 +393,7 @@ plt.axis('off')
 
 plt.subplot(gs[1,2])
 
-plt.title(r'$\bf{F}$: defective sparsity (ordering B)', loc='left', fontsize=10)
+plt.title(r'$\bf{F}$: decoupled updates (special sparsity)', loc='left', fontsize=10)
 
 ax  = plt.gca()
 

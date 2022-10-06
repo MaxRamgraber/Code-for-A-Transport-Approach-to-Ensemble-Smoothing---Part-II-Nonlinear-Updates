@@ -40,11 +40,11 @@ cb1 = matplotlib.colorbar.ColorbarBase(
     norm        = norm,
     orientation = 'horizontal')
 
-cb1.set_label("algorithm progress", labelpad=-10)
+cb1.set_label("algorithm progress", labelpad=-8,fontsize = 12)
 
 plt.gca().xaxis.set_ticks_position('top')
 plt.gca().xaxis.set_label_position('top')
-cb1.ax.set_xticklabels(['start', 'end'])  # horizontal colorbar
+cb1.ax.set_xticklabels(['start', 'end'],fontsize = 12)  # horizontal colorbar
 
 
 plt.gca().annotate('', xy=(0.1, 1.5), xycoords='axes fraction', xytext=(0.425, 1.5), 
@@ -88,7 +88,7 @@ plt.fill(1 + triang_x, 0 + triang_y, color=cmap(0.25), edgecolor="None")
 
 plt.fill(2 + circ_x, 0 + circ_y, color=cmap(0.3), edgecolor="None")
 
-plt.gca().annotate('', xy=(2, 0), xytext=(1, 0), 
+plt.gca().annotate('', xy=(2.15, 0), xytext=(0.85, 0), 
         arrowprops=dict(arrowstyle = '->',color='xkcd:dark grey'))
 
 plt.gca().text(3, 0, "filtering forecast", ha="left", va="center",zorder=10,color="k",fontsize=10)
@@ -98,7 +98,7 @@ plt.fill(12 + triang_x, 0.5 + triang_y, color=cmap(0.55), edgecolor="None")
 
 plt.fill(12 + circ_x, -0.5 + circ_y, color=cmap(0.5), edgecolor="None")
 
-plt.gca().annotate('', xy=(12, 0.5), xytext=(12, -0.5), 
+plt.gca().annotate('', xy=(12, 0.65), xytext=(12, -0.65), 
         arrowprops=dict(arrowstyle = '->',color='xkcd:dark grey'))
 
 plt.gca().text(13, 0, "filtering update", ha="left", va="center",zorder=10,color="k",fontsize=10)
@@ -107,31 +107,52 @@ plt.fill(21 + np.asarray(list(triang_x[:2])+list(triang_x[1:]+1)), 0.5 + np.asar
 
 plt.fill(22 + circ_x, -0.5 + circ_y, color=cmap(0.5), edgecolor="None")
 
-plt.gca().annotate('', xy=(22, 0.5), xytext=(22, -0.5), 
+plt.gca().annotate('', xy=(22, 0.65), xytext=(22, -0.65), 
         arrowprops=dict(arrowstyle = '->',color='xkcd:dark grey'))
 
-plt.gca().text(23, 0, "joint-analysis \n"+"smoothing update", ha="left", va="center",zorder=10,color="k",fontsize=10)
+plt.gca().text(23, 0, "dense \n"+"smoothing update", ha="left", va="center",zorder=10,color="k",fontsize=10)
 
 
-plt.fill(32 + square_x, 0.5 + square_y, color=cmap(0.8), edgecolor="None")
+plt.fill(32 + square_x, 0.5 + square_y, color=cmap(0.75), edgecolor="None")
 
-plt.fill(32 + square_x, -0.5 + square_y, color=cmap(0.8), edgecolor="None")
+plt.fill(32 + square_x, -0.5 + square_y, color=cmap(0.75), edgecolor="None")
 
-plt.fill(33 + triang_x, 0.5 + triang_y, color=cmap(0.75), edgecolor="None")
+plt.fill(33 + triang_x, 0.5 + triang_y, color=cmap(0.8), edgecolor="None")
 
-plt.fill(33 + square_x, -0.5 + square_y, color=cmap(0.75), edgecolor="None")
+plt.fill(33 + square_x, -0.5 + square_y, color=cmap(0.8), edgecolor="None")
 
-plt.gca().annotate('', xy=(32, 0.5), xytext=(33, 0.5), 
+plt.gca().annotate('', xy=(33.15, 0.5), xytext=(31.85, 0.5), 
         arrowprops=dict(arrowstyle = '->',color='xkcd:dark grey'))
 
-plt.gca().annotate('', xy=(32, -0.5), xytext=(33, -0.5), 
+plt.gca().annotate('', xy=(33.15, -0.5), xytext=(31.85, -0.5), 
         arrowprops=dict(arrowstyle = '->',color='xkcd:dark grey'))
 
-plt.gca().text(34, 0, "backward \n"+"smoothing update", ha="left", va="center",zorder=10,color="k",fontsize=10)
+plt.gca().text(34, 0, "forward \n"+"smoothing update", ha="left", va="center",zorder=10,color="k",fontsize=10)
+
+
+
+
+plt.fill(43 + square_x, 0.5 + square_y, color=cmap(0.8), edgecolor="None")
+
+plt.fill(43 + square_x, -0.5 + square_y, color=cmap(0.8), edgecolor="None")
+
+plt.fill(44 + triang_x, 0.5 + triang_y, color=cmap(0.75), edgecolor="None")
+
+plt.fill(44 + square_x, -0.5 + square_y, color=cmap(0.75), edgecolor="None")
+
+plt.gca().annotate('', xy=(42.85, 0.5), xytext=(44.15, 0.5), 
+        arrowprops=dict(arrowstyle = '->',color='xkcd:dark grey'))
+
+plt.gca().annotate('', xy=(42.85, -0.5), xytext=(44.15, -0.5), 
+        arrowprops=dict(arrowstyle = '->',color='xkcd:dark grey'))
+
+plt.gca().text(45, 0, "backward \n"+"smoothing update", ha="left", va="center",zorder=10,color="k",fontsize=10)
+
+
 
 # Dummy point to make axes work
-plt.fill(42 + circ_x, 0 + circ_y, color=cmap(0.3),alpha = 0.)
-plt.fill(-1 + circ_x, 0 + circ_y, color=cmap(0.3),alpha = 0.)
+plt.fill(52 + circ_x, 0 + circ_y, color=cmap(0.3),alpha = 0.)
+plt.fill(0 + circ_x, 0 + circ_y, color=cmap(0.3),alpha = 0.)
 
 plt.axis('equal')
 
@@ -186,15 +207,15 @@ for t in np.arange(1,T,1):
         
         plt.fill(trapezoid[:,0], trapezoid[:,1], color=cmap(counter/maxcounter), edgecolor="None")
 
-plt.title(r'$\bf{A}$: joint analysis smoother', loc='left', fontsize=11)
+plt.title(r'$\bf{A}$: dense smoother', loc='left', fontsize=12)
 plt.axis('equal')
 
-plt.ylabel('conditioned on data', labelpad=-15)
+plt.ylabel('conditioned on data', labelpad=-15,fontsize = 12)
 ax = plt.gca()
 ax.set_xticks([1,T-2])
 ax.set_xticklabels(['',''])
 ax.set_yticks([2,T-1])
-ax.set_yticklabels(['$\mathbf{y}_{1}^{*}$','$\mathbf{y}_{1:t}^{*}$'])
+ax.set_yticklabels(['$\mathbf{y}_{1}^{*}$','$\mathbf{y}_{1:t}^{*}$'],fontsize = 12)
 
 
 #%%
@@ -258,7 +279,7 @@ for t in np.arange(1,T,1):
         
         plt.fill(trapezoid[:,0], trapezoid[:,1], color=cmap(counter/maxcounter), edgecolor="None")
 
-plt.title(r'$\bf{B}$: joint analysis smoother (fixed-lag)', loc='left', fontsize=11)
+plt.title(r'$\bf{B}$: dense smoother (fixed-lag)', loc='left', fontsize=12)
 plt.axis('equal')
 
 ax = plt.gca()
@@ -332,7 +353,7 @@ for t in np.arange(1,T,1):
             
             plt.fill(s + square_x, t + 1 + square_y, color=cmap(counter/maxcounter), edgecolor="None")
     
-plt.title(r'$\bf{C}$: joint analysis smoother (fixed-point)', loc='left', fontsize=11)
+plt.title(r'$\bf{C}$: fixed-point smoother', loc='left', fontsize=12)
 plt.axis('equal')
 
 
@@ -347,7 +368,7 @@ ax.set_yticklabels(['',''])
 plt.subplot(gs[3,0])
 
 counter     = -1
-maxcounter  = (T-1)*2
+maxcounter  = 208
 
 cmap = matplotlib.cm.get_cmap('turbo')
 
@@ -358,28 +379,29 @@ for t in np.arange(1,T,1):
     
     plt.fill(t + circ_x, t + circ_y, color=cmap(counter/maxcounter), edgecolor="None")
     
+    for s in np.arange(1,t,1):
+        
+        counter += 1
+        
+        plt.fill(s + square_x, t + 1 + square_y, color=cmap(counter/maxcounter), edgecolor="None")
+        
     counter += 1
     
     plt.fill(t + triang_x, t + 1 + triang_y, color=cmap(counter/maxcounter), edgecolor="None")
     
-    if t > 1:
-    
-        trapezoid   = np.column_stack((
-            np.asarray(list(triang_x[:2] + 1) + list(triang_x[1:] + t)),
-            np.asarray(list(triang_y[:2] + t + 1) + list(triang_y[1:] + t + 1))))
-        
-        plt.fill(trapezoid[:,0], trapezoid[:,1], color=cmap(counter/maxcounter), alpha = 0.1, edgecolor="None")
 
-plt.title(r'$\bf{D}$: filter', loc='left', fontsize=11)
+plt.title(r'$\bf{D}$: forward smoother', loc='left', fontsize=12)
 plt.axis('equal')
 
-plt.xlabel('state block', labelpad=-10)
-plt.ylabel('conditioned on data', labelpad=-15)
+plt.xlabel('state block', labelpad=-10,fontsize = 12)
+plt.ylabel('conditioned on data', labelpad=-15,fontsize = 12)
 ax = plt.gca()
 ax.set_xticks([1,T-1])
-ax.set_xticklabels(['$\mathbf{x}_{1}$','$\mathbf{x}_{t}$'])
+ax.set_xticklabels(['$\mathbf{x}_{1}$','$\mathbf{x}_{t}$'],fontsize = 12)
 ax.set_yticks([2,T])
-ax.set_yticklabels(['$\mathbf{y}_{1}^{*}$','$\mathbf{y}_{1:t}^{*}$'])
+ax.set_yticklabels(['$\mathbf{y}_{1}^{*}$','$\mathbf{y}_{1:t}^{*}$'],fontsize = 12)
+
+# raise Exception
 
 
 #%%
@@ -428,13 +450,13 @@ for s in np.arange(t-1,0,-1):
     
     plt.fill(s + square_x, t + 1 + square_y, color=cmap(counter/maxcounter), edgecolor="None")
 
-plt.title(r'$\bf{E}$: backward smoother (single-pass)', loc='left', fontsize=11)
+plt.title(r'$\bf{E}$: backward smoother (single-pass)', loc='left', fontsize=12)
 plt.axis('equal')
 
-plt.xlabel('state block', labelpad=-10)
+plt.xlabel('state block', labelpad=-10,fontsize = 12)
 ax = plt.gca()
 ax.set_xticks([1,T-1])
-ax.set_xticklabels(['$\mathbf{x}_{1}$','$\mathbf{x}_{t}$'])
+ax.set_xticklabels(['$\mathbf{x}_{1}$','$\mathbf{x}_{t}$'],fontsize = 12)
 ax.set_yticks([2,T])
 ax.set_yticklabels(['',''])
 
@@ -491,15 +513,15 @@ for t in np.arange(1,T,1):
     
 
         
-plt.title(r'$\bf{F}$: backward smoother (multi-pass)', loc='left', fontsize=11)
+plt.title(r'$\bf{F}$: backward smoother (multi-pass)', loc='left', fontsize=12)
 # plt.title('backward smoother (multi-pass)')
 plt.axis('equal')
 
-plt.xlabel('state block', labelpad=-10)
+plt.xlabel('state block', labelpad=-10,fontsize = 12)
 # plt.ylabel('time scubscript $s$', labelpad=-10)
 ax = plt.gca()
 ax.set_xticks([1,T-1])
-ax.set_xticklabels(['$\mathbf{x}_{1}$','$\mathbf{x}_{t}$'])
+ax.set_xticklabels(['$\mathbf{x}_{1}$','$\mathbf{x}_{t}$'],fontsize = 12)
 ax.set_yticks([2,T])
 ax.set_yticklabels(['',''])
 
