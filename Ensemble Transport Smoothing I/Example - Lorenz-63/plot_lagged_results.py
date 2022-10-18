@@ -6,17 +6,33 @@ import copy
 import pickle
 from matplotlib.patches import Patch
 from matplotlib.lines import Line2D
+import matplotlib
 
-plt.rc('font', family='serif') # sans-serif
-plt.rc('text', usetex=True)
+use_latex   = True
 
-plt.rcParams['text.latex.preamble'] = [
-       r'\usepackage{siunitx}',   # i need upright \micro symbols, but you need...
-       r'\sisetup{detect-all}',   # ...this to force siunitx to actually use your fonts
-       r'\usepackage{helvet}',    # set the normal font here
-       r'\usepackage{sansmath}',  # load up the sansmath so that math -> helvet
-       r'\sansmath'               # <- tricky! -- gotta actually tell tex to use!
-]  
+if use_latex:
+    
+    from matplotlib import rc
+    rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
+    rc('text', usetex=True)
+    titlesize   = 14
+    labelsize   = 12
+    addendum    = "_latex"
+    pad         = -20
+    bigsize     = 22
+    smallsize   = 10
+    tinysize    = 8
+    
+else:
+    
+    matplotlib.style.use('default')
+    titlesize   = 12
+    labelsize   = 10
+    addendum    = ""
+    pad         = -25
+    bigsize     = 18
+    smallsize   = 8
+    tinysize    = 6
     
 plt.close('all')
 
@@ -41,7 +57,7 @@ gs  = GridSpec(nrows = 2, ncols = 2, height_ratios=[1,1], hspace = 0.4)
 
 plt.subplot(gs[0,:])
 
-plt.title(r'$\bf{A}$: Lorenz-63 linear smoothing results vs. ensemble size', loc='left', fontsize=11)
+plt.title(r'$\bf{A}$: Lorenz-63 linear smoothing results vs. ensemble size', loc='left', fontsize=titlesize)
 
 labels      = [
     'backward smoother (single-pass)',
@@ -195,17 +211,20 @@ for idx,strng in enumerate(['EnRTS','EnRTS_mp','EnKS']): #enumerate(['TM_BW','TM
         zorder      = 5)
     
  
-plt.legend(loc='upper right',frameon=False)
+plt.legend(loc='upper right',frameon=False, fontsize = labelsize)
 plt.gca().set_xticks(Ns)
 plt.gca().set_xticklabels(Ns)
 
-plt.xlabel('ensemble size')
-plt.ylabel('time-average RMSE')
+plt.xticks(fontsize = labelsize)
+plt.yticks(fontsize = labelsize)
+
+plt.xlabel('ensemble size', fontsize = labelsize)
+plt.ylabel('time-average RMSE', fontsize = labelsize)
 
 
 plt.subplot(gs[1,:])
 
-plt.title(r'$\bf{B}$: Equivalence of the linear single-pass BW-EnTS and EnRTS', loc='left', fontsize=11)
+plt.title(r'$\bf{B}$: Equivalence of the linear single-pass BW-EnTS and EnRTS', loc='left', fontsize=titlesize)
 
 dct_EnRTS = pickle.load(open("EnRTS_smoother_N=1000.p","rb"))
 dct_TM_BWS = pickle.load(open("TM_BW_smoother_N=1000.p","rb"))
@@ -333,11 +352,11 @@ legend_elements = [
     Patch(facecolor='xkcd:cerulean', edgecolor='None', alpha = 0.2, label='BW-EnTS ($5$\% - $95$\%)')]
 
 
-plt.legend(handles=legend_elements, loc='upper right',frameon=False,ncol = 2)
+plt.legend(handles=legend_elements, loc='upper right',frameon=False,ncol = 2, fontsize = labelsize)
 
-plt.xlabel("time steps")
-plt.ylabel("ensemble error quantiles")
+plt.xlabel("time steps", fontsize = labelsize)
+plt.ylabel("ensemble error quantiles", fontsize = labelsize)
 
-plt.savefig('linear_L63_results_line.png',dpi=600,bbox_inches='tight')
-plt.savefig('linear_L63_results_line.pdf',dpi=600,bbox_inches='tight')
+plt.savefig('results_L63_linear'+addendum+'.png',dpi=600,bbox_inches='tight')
+plt.savefig('results_L63_linear'+addendum+'.pdf',dpi=600,bbox_inches='tight')
     

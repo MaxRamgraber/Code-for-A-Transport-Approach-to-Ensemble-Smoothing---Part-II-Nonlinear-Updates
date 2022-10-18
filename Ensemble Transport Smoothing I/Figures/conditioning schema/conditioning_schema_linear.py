@@ -10,16 +10,26 @@ import os
 from matplotlib import gridspec
 from transport_map_138 import *
 
-plt.rc('font', family='serif') # sans-serif
-plt.rc('text', usetex=True)
+use_latex   = True
 
-plt.rcParams['text.latex.preamble'] = [
-       r'\usepackage{siunitx}',   # i need upright \micro symbols, but you need...
-       r'\sisetup{detect-all}',   # ...this to force siunitx to actually use your fonts
-       r'\usepackage{helvet}',    # set the normal font here
-       r'\usepackage{sansmath}',  # load up the sansmath so that math -> helvet
-       r'\sansmath'               # <- tricky! -- gotta actually tell tex to use!
-]  
+if use_latex:
+    
+    from matplotlib import rc
+    rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
+    rc('text', usetex=True)
+    titlesize   = 14
+    labelsize   = 12
+    addendum    = "_latex"
+    pad         = -20
+    bigsize     = 22
+    
+else:
+    
+    titlesize   = 12
+    labelsize   = 10
+    addendum    = ""
+    pad         = -25
+    bigsize     = 18
 
 root_directory = os.path.dirname(os.path.realpath(__file__))
 
@@ -130,10 +140,10 @@ plt.subplot(gs2[0,0])
 
 plt.tight_layout()
 
-plt.gca().text(0.0, 1.05, '$\mathbf{A}:$ forward map and inversion', transform=plt.gca().transAxes, fontsize=12,
+plt.gca().text(0.0, 1.05, '$\mathbf{A}:$ forward map and inversion', transform=plt.gca().transAxes, fontsize=titlesize,
         verticalalignment='center',horizontalalignment='left',color=[0.2,0.2,0.2])
 
-plt.gca().text(0.02, 0.98, 'reference distribution', transform=plt.gca().transAxes, fontsize=10,
+plt.gca().text(0.02, 0.98, 'reference distribution', transform=plt.gca().transAxes, fontsize=labelsize,
         verticalalignment='top',horizontalalignment='left',color='xkcd:grey')
 
 x           = norm_samples[:,0]
@@ -186,7 +196,7 @@ plt.tick_params(left=False,
 
 plt.gca().invert_yaxis()
 
-plt.gca().text(0.025, 0.1, '$z_{1}$', transform=plt.gca().transAxes, fontsize=18,
+plt.gca().text(0.025, 0.1, '$z_{1}$', transform=plt.gca().transAxes, fontsize=bigsize,
         verticalalignment='bottom',horizontalalignment='left',color='#01A109')
 
 # -------------------------------------------------------------------------
@@ -217,7 +227,7 @@ plt.tick_params(left=False,
                 labelleft=False,
                 labelbottom=False)
 
-plt.gca().text(0.9, 0.975, '$z_{2}$', transform=plt.gca().transAxes, fontsize=18,
+plt.gca().text(0.9, 0.975, '$z_{2}$', transform=plt.gca().transAxes, fontsize=bigsize,
         verticalalignment='top',horizontalalignment='right',color='#01A109')
 
 # =========================================================================
@@ -239,7 +249,7 @@ gs2 = gridspec.GridSpecFromSubplotSpec(
 
 plt.subplot(gs2[0,0])
 
-plt.gca().text(0.02, 0.98, 'intermediate distribution', transform=plt.gca().transAxes, fontsize=10,
+plt.gca().text(0.02, 0.98, 'intermediate distribution', transform=plt.gca().transAxes, fontsize=labelsize,
         verticalalignment='top',horizontalalignment='left',color='xkcd:grey')
 
 # -----------------------------------------------------------------------------
@@ -261,7 +271,7 @@ plt.gca().annotate('', xy=(xp+0.08, 0.6), xycoords='axes fraction', xytext=(xp+0
                     arrowprops=dict(color=col,headlength=20,headwidth=35,width=1),)
 
 
-plt.gca().text(-0.1175, 0.6, '$S_{1}^{-1}(z_{1})$', transform=plt.gca().transAxes, fontsize=10,
+plt.gca().text(-0.1175, 0.6, '$S_{1}^{-1}(z_{1})$', transform=plt.gca().transAxes, fontsize=labelsize,
         verticalalignment='center',horizontalalignment='center',color=[0.2,0.2,0.2])
 
 # -----------------------------------------------------------------------------
@@ -283,7 +293,7 @@ plt.gca().annotate('', xy=(xp-0.08, 0.4), xycoords='axes fraction', xytext=(xp-0
                     arrowprops=dict(color=col,headlength=20,headwidth=35,width=1),)
 
 
-plt.gca().text(-0.1175, 0.4, '$S_{1}(x_{1})$', transform=plt.gca().transAxes, fontsize=10,
+plt.gca().text(-0.1175, 0.4, '$S_{1}(x_{1})$', transform=plt.gca().transAxes, fontsize=labelsize,
         verticalalignment='center',horizontalalignment='center',color=[0.2,0.2,0.2])
 
 
@@ -339,7 +349,7 @@ plt.tick_params(left=False,
 
 plt.gca().invert_yaxis()
 
-plt.gca().text(0.025, 0.1, '$x_{1}$', transform=plt.gca().transAxes, fontsize=18,
+plt.gca().text(0.025, 0.1, '$x_{1}$', transform=plt.gca().transAxes, fontsize=bigsize,
         verticalalignment='bottom',horizontalalignment='left',color='#FF5000')
 
 # -------------------------------------------------------------------------
@@ -370,7 +380,7 @@ plt.tick_params(left=False,
                 labelleft=False,
                 labelbottom=False)
 
-plt.gca().text(0.9, 0.975, '$z_{2}$', transform=plt.gca().transAxes, fontsize=18,
+plt.gca().text(0.9, 0.975, '$z_{2}$', transform=plt.gca().transAxes, fontsize=bigsize,
         verticalalignment='top',horizontalalignment='right',color='#01A109')
 
 # =========================================================================
@@ -392,7 +402,7 @@ gs2 = gridspec.GridSpecFromSubplotSpec(
 
 plt.subplot(gs2[0,0])
 
-plt.gca().text(0.02, 0.98, 'target distribution', transform=plt.gca().transAxes, fontsize=10,
+plt.gca().text(0.02, 0.98, 'target distribution', transform=plt.gca().transAxes, fontsize=labelsize,
         verticalalignment='top',horizontalalignment='left',color='xkcd:grey')
 
 x           = ret[:,0]
@@ -435,7 +445,7 @@ plt.gca().annotate('', xy=(xp+0.08, 0.6), xycoords='axes fraction', xytext=(xp+0
                     arrowprops=dict(color=col,headlength=20,headwidth=35,width=1),)
 
 
-plt.gca().text(-0.1, 0.6, '$S_{2}^{-1}(z_{2};x_{1})$', transform=plt.gca().transAxes, fontsize=10,
+plt.gca().text(-0.1, 0.6, '$S_{2}^{-1}(z_{2};x_{1})$', transform=plt.gca().transAxes, fontsize=labelsize,
         verticalalignment='center',horizontalalignment='center',color=[0.2,0.2,0.2])
 
 
@@ -458,7 +468,7 @@ plt.gca().annotate('', xy=(xp-0.08, 0.4), xycoords='axes fraction', xytext=(xp-0
                     arrowprops=dict(color=col,headlength=20,headwidth=35,width=1),)
 
 
-plt.gca().text(-0.1175, 0.4, '$S_{2}(x_{1},x_{2})$', transform=plt.gca().transAxes, fontsize=10,
+plt.gca().text(-0.1175, 0.4, '$S_{2}(x_{1},x_{2})$', transform=plt.gca().transAxes, fontsize=labelsize,
         verticalalignment='center',horizontalalignment='center',color=[0.2,0.2,0.2])
 
 # -------------------------------------------------------------------------
@@ -492,7 +502,7 @@ plt.tick_params(left=False,
 
 plt.gca().invert_yaxis()
 
-plt.gca().text(0.025, 0.1, '$x_{1}$', transform=plt.gca().transAxes, fontsize=18,
+plt.gca().text(0.025, 0.1, '$x_{1}$', transform=plt.gca().transAxes, fontsize=bigsize,
         verticalalignment='bottom',horizontalalignment='left',color='#FF5000')
 
 # -------------------------------------------------------------------------
@@ -525,7 +535,7 @@ plt.tick_params(left=False,
                 labelleft=False,
                 labelbottom=False)
 
-plt.gca().text(0.9, 0.975, '$x_{2}$', transform=plt.gca().transAxes, fontsize=18,
+plt.gca().text(0.9, 0.975, '$x_{2}$', transform=plt.gca().transAxes, fontsize=bigsize,
         verticalalignment='top',horizontalalignment='right',color='#FF5000')
 
 #%%
@@ -569,7 +579,7 @@ plt.text(
     " reference sample position \n (relative to origin)",
     horizontalalignment ="left",
     verticalalignment   ="center",
-    fontsize            = 12)
+    fontsize            = titlesize)
 
 # Now plot example samples
 plt.scatter(
@@ -585,7 +595,7 @@ plt.text(
     " samples",
     horizontalalignment ="left",
     verticalalignment   ="center",
-    fontsize            = 12)
+    fontsize            = titlesize)
 
 
 # Now plot example samples
@@ -600,7 +610,7 @@ plt.text(
     " original samples (conditioning)",
     horizontalalignment ="left",
     verticalalignment   ="center",
-    fontsize            = 12)
+    fontsize            = titlesize)
 
 
 # plt.axis("equal")
@@ -654,10 +664,10 @@ gs2 = gridspec.GridSpecFromSubplotSpec(
 
 plt.subplot(gs2[0,0])
 
-plt.gca().text(0.0, 1.05, '$\mathbf{B}:$ conditional sampling', transform=plt.gca().transAxes, fontsize=12,
+plt.gca().text(0.0, 1.05, '$\mathbf{B}:$ conditional sampling', transform=plt.gca().transAxes, fontsize=titlesize,
         verticalalignment='center',horizontalalignment='left',color=[0.2,0.2,0.2])
 
-plt.gca().text(0.02, 0.98, 'conditional intermediate distribution', transform=plt.gca().transAxes, fontsize=10,
+plt.gca().text(0.02, 0.98, 'conditional intermediate distribution', transform=plt.gca().transAxes, fontsize=labelsize,
         verticalalignment='top',horizontalalignment='left',color='xkcd:grey')
 
 x           = ret_cond[:,0]
@@ -720,7 +730,7 @@ plt.tick_params(left=False,
 
 plt.gca().invert_yaxis()
 
-plt.gca().text(0.025, 0.1, '$x_{1}^{*}$', transform=plt.gca().transAxes, fontsize=18,
+plt.gca().text(0.025, 0.1, '$x_{1}^{*}$', transform=plt.gca().transAxes, fontsize=bigsize,
         verticalalignment='bottom',horizontalalignment='left',color='#1988B8')
 
 # -------------------------------------------------------------------------
@@ -751,7 +761,7 @@ plt.tick_params(left=False,
                 labelleft=False,
                 labelbottom=False)
 
-plt.gca().text(0.9, 0.975, '$z_{2}$', transform=plt.gca().transAxes, fontsize=18,
+plt.gca().text(0.9, 0.975, '$z_{2}$', transform=plt.gca().transAxes, fontsize=bigsize,
         verticalalignment='top',horizontalalignment='right',color='#01A109')
 
 # =========================================================================
@@ -773,7 +783,7 @@ gs2 = gridspec.GridSpecFromSubplotSpec(
 
 plt.subplot(gs2[0,0])
 
-plt.gca().text(0.02, 0.98, 'conditioned target distribution', transform=plt.gca().transAxes, fontsize=10,
+plt.gca().text(0.02, 0.98, 'conditioned target distribution', transform=plt.gca().transAxes, fontsize=labelsize,
         verticalalignment='top',horizontalalignment='left',color='xkcd:grey')
 
 # -----------------------------------------------------------------------------
@@ -795,7 +805,7 @@ plt.gca().annotate('', xy=(xp+0.08, 0.5), xycoords='axes fraction', xytext=(xp+0
                     arrowprops=dict(color=col,headlength=20,headwidth=35,width=1),)
 
 
-plt.gca().text(-0.1, 0.5, '$S_{2}^{-1}(z_{2};x_{1}^{*})$', transform=plt.gca().transAxes, fontsize=10,
+plt.gca().text(-0.1, 0.5, '$S_{2}^{-1}(z_{2};x_{1}^{*})$', transform=plt.gca().transAxes, fontsize=labelsize,
         verticalalignment='center',horizontalalignment='center',color=[0.2,0.2,0.2])
 
 
@@ -858,7 +868,7 @@ plt.tick_params(left=False,
 
 plt.gca().invert_yaxis()
 
-plt.gca().text(0.025, 0.1, '$x_{1}^{*}$', transform=plt.gca().transAxes, fontsize=18,
+plt.gca().text(0.025, 0.1, '$x_{1}^{*}$', transform=plt.gca().transAxes, fontsize=bigsize,
         verticalalignment='bottom',horizontalalignment='left',color='#1988B8')
 
 # -------------------------------------------------------------------------
@@ -889,8 +899,8 @@ plt.tick_params(left=False,
                 labelleft=False,
                 labelbottom=False)
 
-plt.gca().text(0.9, 0.975, '$x_{2}^{*}$', transform=plt.gca().transAxes, fontsize=18,
+plt.gca().text(0.9, 0.975, '$x_{2}^{*}$', transform=plt.gca().transAxes, fontsize=bigsize,
         verticalalignment='top',horizontalalignment='right',color='#FF5000')
 
-plt.savefig('conditioning.png',dpi=600,bbox_inches='tight')
-plt.savefig('conditioning.pdf',dpi=600,bbox_inches='tight')
+plt.savefig('conditioning'+addendum+'.png',dpi=600,bbox_inches='tight')
+plt.savefig('conditioning'+addendum+'.pdf',dpi=600,bbox_inches='tight')

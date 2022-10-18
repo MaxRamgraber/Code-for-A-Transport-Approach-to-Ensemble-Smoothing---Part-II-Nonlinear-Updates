@@ -6,9 +6,31 @@ import copy
 from matplotlib.gridspec import GridSpec
 plt.close('all')
 
-from matplotlib import rc
-rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
-rc('text', usetex=True)
+use_latex   = True
+
+if use_latex:
+    
+    from matplotlib import rc
+    rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
+    rc('text', usetex=True)
+    titlesize   = 14
+    labelsize   = 12
+    addendum    = "_latex"
+    pad         = -20
+    bigsize     = 22
+    smallsize   = 10
+    tinysize    = 8
+    
+else:
+    
+    matplotlib.style.use('default')
+    titlesize   = 12
+    labelsize   = 10
+    addendum    = ""
+    pad         = -25
+    bigsize     = 18
+    smallsize   = 8
+    tinysize    = 6
 
 # Then we prepare a new colormap, mainly for cosmetic purposes.
 cmap    = "turbo"
@@ -56,7 +78,7 @@ for (i,N) in enumerate(Ns):
                 arrowprops=dict(arrowstyle = '-',color='xkcd:dark grey'))
     plt.gca().annotate('', xy=(-0.1, -2.68), xycoords='axes fraction', xytext=(-0.36, -2.68), 
                 arrowprops=dict(arrowstyle = '-',color='xkcd:dark grey'))
-    plt.gca().text(-0.42, -0.8, '$N='+str(N)+'$', transform=plt.gca().transAxes, fontsize=10,
+    plt.gca().text(-0.42, -0.8, '$N='+str(N)+'$', transform=plt.gca().transAxes, fontsize=smallsize,
             verticalalignment='center',horizontalalignment='center',color='xkcd:dark grey',rotation=90)
     
     # Plot the covariance for each algorithm
@@ -72,7 +94,7 @@ for (i,N) in enumerate(Ns):
         plt.xticks([])
         plt.yticks([])
         if k == 0:
-            plt.ylabel('Avg. covariance', fontsize=8)
+            plt.ylabel('Avg. covariance', fontsize=tinysize)
     
     plt.subplot(gs[3*i+0,len(algs)])
     plt.axis('off')
@@ -94,7 +116,7 @@ for (i,N) in enumerate(Ns):
         plt.xticks([])
         plt.yticks([])
         if k == 0:
-            plt.ylabel('Bias', fontsize=8)
+            plt.ylabel('Bias', fontsize=tinysize)
     
     plt.subplot(gs[3*i+1,len(algs)])
     plt.axis('off')
@@ -116,7 +138,7 @@ for (i,N) in enumerate(Ns):
         plt.xticks([])
         plt.yticks([])
         if k==0:
-            plt.ylabel('RMSE', fontsize=8)
+            plt.ylabel('RMSE', fontsize=tinysize)
     
     plt.subplot(gs[3*i+2,len(algs)])
     plt.axis('off')
@@ -135,7 +157,7 @@ plt.gca().annotate('', xy=(.0, 1.34), xycoords='axes fraction', xytext=(0., 1.2)
             arrowprops=dict(arrowstyle = '-',color='xkcd:dark grey'))#'xkcd:orangish red'))
 plt.gca().annotate('', xy=(1, 1.34), xycoords='axes fraction', xytext=(1., 1.2),
             arrowprops=dict(arrowstyle = '-',color='xkcd:dark grey'))#'xkcd:orangish red'))
-plt.gca().text(0.5, 1.4, 'Reference', transform=plt.gca().transAxes, fontsize=9,
+plt.gca().text(0.5, 1.4, 'Reference', transform=plt.gca().transAxes, fontsize=smallsize,
         verticalalignment='center',horizontalalignment='center',color='xkcd:dark grey')#'xkcd:orangish red')
 
 # color_subtypes = ['xkcd:orangish red','xkcd:cerulean','xkcd:grass green','xkcd:yellow orange']
@@ -155,7 +177,7 @@ for i in range(n_subtypes):
                 arrowprops=dict(arrowstyle = '-',color=color_subtypes[i]))
     plt.gca().annotate('', xy=(rightx, 1.34), xycoords='axes fraction', xytext=(rightx, 1.2), 
                 arrowprops=dict(arrowstyle = '-',color=color_subtypes[i]))
-    plt.gca().text((rightx+0.02)/2, 1.4, title_subtypes[i], transform=plt.gca().transAxes, fontsize=9,
+    plt.gca().text((rightx+0.02)/2, 1.4, title_subtypes[i], transform=plt.gca().transAxes, fontsize=smallsize,
             verticalalignment='center',horizontalalignment='center',color=color_subtypes[i])
 
 # plt.subplot(gs[0,3])
@@ -191,7 +213,7 @@ for i in range(n_subtypes):
 # plt.gca().text((rightx+0.02)/2, 1.50, 'forward multi-pass smoothers', transform=plt.gca().transAxes, fontsize=9,
 #         verticalalignment='center',horizontalalignment='center',color='xkcd:yellow orange')
 
-plt.savefig('smoothing_covariances'+case+'.pdf',dpi=600,bbox_inches='tight')
+plt.savefig('smoothing_covariances'+addendum+'.pdf',dpi=600,bbox_inches='tight')
 
 #%%
 
