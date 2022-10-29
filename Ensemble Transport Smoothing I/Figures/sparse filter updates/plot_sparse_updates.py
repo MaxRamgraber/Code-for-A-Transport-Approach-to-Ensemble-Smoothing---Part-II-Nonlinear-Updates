@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-import turbo_colormap
 import colorsys
 
 cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", 
