@@ -2,14 +2,37 @@ import pickle
 import matplotlib.pyplot as plt
 import numpy as np
 import copy
+import matplotlib
 from matplotlib.gridspec import GridSpec
 from matplotlib.ticker import FormatStrFormatter
 from matplotlib.patches import Patch
 from matplotlib.lines import Line2D
 
-from matplotlib import rc
-rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
-rc('text', usetex=True)
+use_latex   = False
+
+if use_latex:
+    
+    from matplotlib import rc
+    rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
+    rc('text', usetex=True)
+    titlesize   = 14
+    labelsize   = 12
+    addendum    = "_latex"
+    pad         = -20
+    bigsize     = 22
+    smallsize   = 10
+    tinysize    = 8
+    
+else:
+    
+    matplotlib.style.use('default')
+    titlesize   = 12
+    labelsize   = 10
+    addendum    = ""
+    pad         = -25
+    bigsize     = 18
+    smallsize   = 8
+    tinysize    = 6
 
 plt.close('all')
 
@@ -31,7 +54,7 @@ plt.subplot(gs[4,0])
 ax1     = plt.gca()
 ax2     = ax1.twinx()
 
-plt.title(r"Dense smoother", loc='left')
+plt.title("$\mathbf{E}$: Dense smoother", loc='left')
 
 # Plot the map
 ax1.plot(np.arange(30)+1,subdct[1000]['EnTS-JA']['gain'],color='xkcd:crimson',marker="^")
@@ -66,13 +89,14 @@ ax1.legend(
     handles         = legend_elements, 
     ncol            = 4,
     loc             = 'upper right',
+    fontsize        = smallsize,
     bbox_to_anchor  = (1.0, 1.05),
     frameon         = False,
     fancybox        = False, 
     shadow          = False)
 
 xlim    = ax1.get_xlim()
-ax1.set_xlabel('Time steps (final smoothing pass)')
+ax1.set_xlabel('Time steps (final smoothing pass)', fontsize = labelsize)
 
 #xlim    = ax1.get_xlim()
 #ax1.set_xlabel('time steps (final smoothing pass)')
@@ -84,7 +108,7 @@ ax1.set_xlabel('Time steps (final smoothing pass)')
 plt.subplot(gs[3,0])
 ax1     = plt.gca()
 ax2     = ax1.twinx()
-plt.title(r"Forward mutli-pass smoother - Contribution from state $\mathbf{B}_s(\mathbf{X}_{s-1}^* - \mathbf{X}_{s-1})$", loc='left')
+plt.title("$\mathbf{D}$: Forward mutli-pass smoother - Contribution from state $\mathbf{B}_s(\mathbf{X}_{s-1}^* - \mathbf{X}_{s-1})$", loc='left', fontsize = titlesize)
 
 # Plot the map
 ax1.plot(np.arange(30)+1,subdct[1000]['EnTS-FW-mp']['gain'][:,1],color='xkcd:yellow orange',marker='v')
@@ -94,8 +118,8 @@ ax1.plot(np.arange(30)+1,subdct[100]['EnTS-FW-mp']['gain'][:,1],color='xkcd:ligh
 ax2.plot(np.arange(30)+1,subdct[1000]['EnTS-FW-mp']['signal'][:,1],color='xkcd:yellow orange',linestyle='--',marker='+')
 ax2.plot(np.arange(30)+1,subdct[100]['EnTS-FW-mp']['signal'][:,1],color='xkcd:light mustard',linestyle='--',marker='x')
 
-ax1.set_ylabel('Mean abs. gain')
-ax2.set_ylabel('Mean abs. signal')
+ax1.set_ylabel('Mean abs. gain', fontsize=labelsize)
+ax2.set_ylabel('Mean abs. signal', fontsize=labelsize)
 #plt.xlabel('time steps (final smoothing pass)')
 plt.gca().set_xticklabels([])
 
@@ -121,6 +145,7 @@ ax1.legend(
     ncol            = 4,
     loc             = 'upper right',
     bbox_to_anchor  = (1.0, 1.05),
+    fontsize        = smallsize,
     frameon         = False,
     fancybox        = False, 
     shadow          = False)
@@ -130,7 +155,7 @@ ax1.legend(
 plt.subplot(gs[2,0])
 ax1     = plt.gca()
 ax2     = ax1.twinx()
-plt.title(r"Forward multi-pass smoother - Contribution from observations $\mathbf{K}_s(\mathbf{y}_t^* - \mathbf{Y}_t)$", loc='left')
+plt.title("$\mathbf{C}$: Forward multi-pass smoother - Contribution from observations $\mathbf{K}_s(\mathbf{y}_t^* - \mathbf{Y}_t)$", fontsize = titlesize, loc='left')
 
 # Plot the map
 ax1.plot(np.arange(30)+1,subdct[1000]['EnTS-FW-mp']['gain'][:,0],color='xkcd:yellow orange',marker='v')
@@ -140,8 +165,8 @@ ax1.plot(np.arange(30)+1,subdct[100]['EnTS-FW-mp']['gain'][:,0],color='xkcd:ligh
 ax2.plot(np.arange(30)+1,subdct[1000]['EnTS-FW-mp']['signal'][:,0],color='xkcd:yellow orange',linestyle='--',marker='+')
 ax2.plot(np.arange(30)+1,subdct[100]['EnTS-FW-mp']['signal'][:,0],color='xkcd:light mustard',linestyle='--',marker='x')
 
-ax1.set_ylabel('Mean abs. gain')
-ax2.set_ylabel('Mean abs. signal')
+ax1.set_ylabel('Mean abs. gain', fontsize = labelsize)
+ax2.set_ylabel('Mean abs. signal', fontsize = labelsize)
 plt.gca().set_xticklabels([])
 
 ax1.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
@@ -164,6 +189,7 @@ ax1.legend(
     handles         = legend_elements, 
     ncol            = 4,
     loc             = 'upper right',
+    fontsize        = smallsize,
     bbox_to_anchor  = (1.0, 1.05),
     frameon         = False,
     fancybox        = False, 
@@ -179,7 +205,7 @@ ax1.set_xlim(xlim)
 ax2     = ax1.twinx()
 
 alg     = "RTS_sp"#"EnRTSr"
-plt.title(r"Backward single-pass smoother", loc='left')
+plt.title("$\mathbf{B}$: Backward single-pass smoother", fontsize = titlesize, loc='left')
 
 # Plot the map
 ax1.plot(np.arange(29)+1,subdct[1000]['EnTS-BW-sp']['gain'][:-1],color='xkcd:pine',marker='^')
@@ -189,8 +215,8 @@ ax1.plot(np.arange(29)+1,subdct[100]['EnTS-BW-sp']['gain'][:-1],color='xkcd:gras
 ax2.plot(np.arange(29)+1,subdct[1000]['EnTS-BW-sp']['signal'][:-1],color='xkcd:pine',linestyle='--',marker='+')
 ax2.plot(np.arange(29)+1,subdct[100]['EnTS-BW-sp']['signal'][:-1],color='xkcd:grass green',linestyle='--',marker='x')
 
-ax1.set_ylabel('Mean abs. gain')
-ax2.set_ylabel('Mean abs. signal')
+ax1.set_ylabel('Mean abs. gain', fontsize = labelsize)
+ax2.set_ylabel('Mean abs. signal', fontsize = labelsize)
 plt.gca().set_xticklabels([])
 
 # ax1.yaxis.label.set_color('xkcd:cerulean')
@@ -217,6 +243,7 @@ ax1.legend(
     ncol            = 4,
     loc             = 'upper right',
     bbox_to_anchor  = (1.0, 1.05),
+    fontsize        = smallsize,
     frameon         = False,
     fancybox        = False, 
     shadow          = False)
@@ -230,7 +257,7 @@ ax1     = plt.gca()
 ax1.set_xlim(xlim)
 ax2     = ax1.twinx()
 
-plt.title(r"Backward multi-pass smoother", loc='left')
+plt.title("$\mathbf{A}$: Backward multi-pass smoother", loc='left', fontsize = titlesize)
 # Plot the map
 ax1.plot(np.arange(30)+1,subdct[1000]['EnTS-BW-mp']['gain'],color='xkcd:cobalt',marker='^')
 ax1.plot(np.arange(30)+1,subdct[100]['EnTS-BW-mp']['gain'],color='xkcd:cerulean',marker='v')
@@ -239,9 +266,9 @@ ax1.plot(np.arange(30)+1,subdct[100]['EnTS-BW-mp']['gain'],color='xkcd:cerulean'
 ax2.plot(np.arange(30)+1,subdct[1000]['EnTS-BW-mp']['signal'],color='xkcd:cobalt',linestyle='--',marker='+')
 ax2.plot(np.arange(30)+1,subdct[100]['EnTS-BW-mp']['signal'],color='xkcd:cerulean',linestyle='--',marker='x')
 
-ax1.set_ylabel('Mean abs. gain')
-ax2.set_ylabel('Mean abs. signal')
-plt.xlabel('time steps (final smoothing pass)')
+ax1.set_ylabel('Mean abs. gain', fontsize = labelsize)
+ax2.set_ylabel('Mean abs. signal', fontsize = labelsize)
+plt.xlabel('time steps (final smoothing pass)', fontsize = titlesize)
 plt.gca().set_xticklabels([])
 
 ax1.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
@@ -264,10 +291,11 @@ ax1.legend(
     handles         = legend_elements, 
     ncol            = 4,
     loc             = 'upper right',
+    fontsize        = smallsize,
     bbox_to_anchor  = (1.0, 1.05),
     frameon         = False,
     fancybox        = False, 
     shadow          = False)
 
 plt.tight_layout()
-plt.savefig('signal_vs_gain.pdf',dpi=600,bbox_inches='tight')
+plt.savefig('signal_vs_gain'+addendum+'.pdf',dpi=600,bbox_inches='tight')
