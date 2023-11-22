@@ -7,34 +7,18 @@ import pickle
 from matplotlib.patches import Patch
 from matplotlib.lines import Line2D
 from matplotlib import colors
-import matplotlib
 import os
 
-use_latex   = False
+plt.rc('font', family='serif') # sans-serif
+plt.rc('text', usetex=True)
 
-if use_latex:
-    
-    from matplotlib import rc
-    rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
-    rc('text', usetex=True)
-    titlesize   = 14
-    labelsize   = 12
-    addendum    = "_latex"
-    pad         = -20
-    bigsize     = 22
-    smallsize   = 10
-    tinysize    = 8
-    
-else:
-    
-    matplotlib.style.use('default')
-    titlesize   = 12
-    labelsize   = 10
-    addendum    = ""
-    pad         = -25
-    bigsize     = 18
-    smallsize   = 8
-    tinysize    = 6
+plt.rcParams['text.latex.preamble'] = [
+       r'\usepackage{siunitx}',   # i need upright \micro symbols, but you need...
+       r'\sisetup{detect-all}',   # ...this to force siunitx to actually use your fonts
+       r'\usepackage{helvet}',    # set the normal font here
+       r'\usepackage{sansmath}',  # load up the sansmath so that math -> helvet
+       r'\sansmath'               # <- tricky! -- gotta actually tell tex to use!
+]  
 
 root_directory = os.path.dirname(os.path.realpath(__file__))
     
@@ -128,19 +112,18 @@ plt.plot(
     label   = 'EnKF (semi-empirical)',
     marker  = 'v')
 
-plt.legend(frameon = False, fontsize = labelsize)
+plt.legend(frameon = False)
 
-plt.xlabel('ensemble size (log scale)', fontsize = labelsize)
-plt.ylabel('time-average RMSE', fontsize = labelsize)
+plt.xlabel('ensemble size (log scale)')
+plt.ylabel('time-average RMSE')
 
 ylim = plt.gca().get_ylim()
 plt.ylim([ylim[0],0.8])
 plt.xlim([50,250])
 plt.xscale('log')
-plt.gca().set_xticks(Ns, fontsize = labelsize)
-plt.gca().set_xticklabels(Ns, fontsize = labelsize)
-plt.yticks(fontsize = labelsize)
+plt.gca().set_xticks(Ns)
+plt.gca().set_xticklabels(Ns)
 
-plt.savefig('filter_comparison_ensemble_repeats='+str(repeats)+addendum+'.png',dpi=600,bbox_inches='tight')
-plt.savefig('filter_comparison_ensemble_repeats='+str(repeats)+addendum+'.pdf',dpi=600,bbox_inches='tight')
+plt.savefig('filter_comparison_ensemble_repeats='+str(repeats)+'.png',dpi=600,bbox_inches='tight')
+plt.savefig('filter_comparison_ensemble_repeats='+str(repeats)+'.pdf',dpi=600,bbox_inches='tight')
     

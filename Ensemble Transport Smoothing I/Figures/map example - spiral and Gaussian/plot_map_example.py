@@ -10,27 +10,17 @@ import matplotlib
 import os
 from transport_map_138 import *
 
-use_latex   = True
+plt.rc('font', family='serif') # sans-serif
+plt.rc('text', usetex=True)
 
-if use_latex:
-    
-    from matplotlib import rc
-    rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
-    rc('text', usetex=True)
-    titlesize   = 14
-    labelsize   = 12
-    addendum    = "_latex"
-    pad         = -20
-    bigsize     = 22
-    
-else:
-    
-    titlesize   = 12
-    labelsize   = 10
-    addendum    = ""
-    pad         = -25
-    bigsize     = 18
-    
+plt.rcParams['text.latex.preamble'] = [
+       r'\usepackage{siunitx}',   # i need upright \micro symbols, but you need...
+       r'\sisetup{detect-all}',   # ...this to force siunitx to actually use your fonts
+       r'\usepackage{helvet}',    # set the normal font here
+       r'\usepackage{sansmath}',  # load up the sansmath so that math -> helvet
+       r'\sansmath'               # <- tricky! -- gotta actually tell tex to use!
+]  
+
 root_directory = os.path.dirname(os.path.realpath(__file__))
 
 # Colors of the colormap
@@ -182,7 +172,7 @@ kde = sklearn.neighbors.KernelDensity(bandwidth=0.1)
 kde.fit(X2)
 
 # Now create the actual figure
-plt.figure(figsize=(10,8))
+plt.figure(figsize=(12,12))
 
 # We want two subplots, side-by-side
 gs  = matplotlib.gridspec.GridSpec(nrows=4,ncols=2,width_ratios=[1,1])
@@ -231,7 +221,7 @@ plt.scatter(
     x       = norm_samples[:,0],
     y       = norm_samples[:,1],
     color   =  color_values_directional,
-    s       = 3,
+    s       = 5,
     zorder  = 10)
 
 # Set equal axis aspect
@@ -239,7 +229,7 @@ plt.axis([-3, 3, -3, 3])
 plt.gca().set_aspect('equal', adjustable='box')
 
 # Label the subplot
-plt.title(r'$\bf{A}$: reference density $\eta$', loc='left', fontsize = titlesize)
+plt.title(r'$\bf{A}$: reference density $\eta$', loc='left')
 
 # Remove all axis ticks
 plt.tick_params(left=False,
@@ -248,24 +238,24 @@ plt.tick_params(left=False,
                 labelbottom=False)
 
 # Draw arrows for the map functions between the two subplots
-plt.gca().annotate('', xy=(1.32, 0.95), xycoords='axes fraction', xytext=(1.1, 0.85), 
+plt.gca().annotate('', xy=(1.27, 0.95), xycoords='axes fraction', xytext=(1.05, 0.85), 
             arrowprops=dict(color='xkcd:silver',headlength=10,headwidth=6,width=2))
-plt.gca().annotate('', xy=(1.1, 0.75), xycoords='axes fraction', xytext=(1.32, 0.85), 
+plt.gca().annotate('', xy=(1.05, 0.75), xycoords='axes fraction', xytext=(1.27, 0.85), 
             arrowprops=dict(color='xkcd:silver',headlength=10,headwidth=6,width=2))
-plt.gca().text(1.2, 1.00, '$\mathit{\mathbf{S}}^{-1}(\it{\mathbf{z}})$', transform=plt.gca().transAxes, fontsize=titlesize,
+plt.gca().text(1.1, 1.00, '$\mathit{\mathbf{S}}^{-1}(\it{\mathbf{z}})$', transform=plt.gca().transAxes, fontsize=14,
         verticalalignment='center',horizontalalignment='center',color='xkcd:dark grey')
-plt.gca().text(1.2, 0.7, '$\mathit{\mathbf{S}}(\it{\mathbf{w}})$', transform=plt.gca().transAxes, fontsize=titlesize,
+plt.gca().text(1.1, 0.7, '$\mathit{\mathbf{S}}(\it{\mathbf{w}})$', transform=plt.gca().transAxes, fontsize=14,
         verticalalignment='center',horizontalalignment='center',color='xkcd:dark grey')
 
 
 # Draw arrows for the map functions between the two subplots
-plt.gca().annotate('', xy=(1.32, 0.15), xycoords='axes fraction', xytext=(1.1, 0.25), 
+plt.gca().annotate('', xy=(1.27, 0.15), xycoords='axes fraction', xytext=(1.05, 0.25), 
             arrowprops=dict(color='xkcd:silver',headlength=10,headwidth=6,width=2))
-plt.gca().annotate('', xy=(1.1, 0.15), xycoords='axes fraction', xytext=(1.32, 0.05), 
+plt.gca().annotate('', xy=(1.05, 0.15), xycoords='axes fraction', xytext=(1.27, 0.05), 
             arrowprops=dict(color='xkcd:silver',headlength=10,headwidth=6,width=2))
-plt.gca().text(1.2, 0.3, '$\it{\mathbf{C}}^{-1}\it{\mathbf{z}}$', transform=plt.gca().transAxes, fontsize=titlesize,
+plt.gca().text(1.1, 0.3, '$\it{\mathbf{C}}^{-1}\it{\mathbf{z}}$', transform=plt.gca().transAxes, fontsize=14,
         verticalalignment='center',horizontalalignment='center',color='xkcd:dark grey')
-plt.gca().text(1.2, 0.0, '$\it{\mathbf{C}}\it{\mathbf{w}}$', transform=plt.gca().transAxes, fontsize=titlesize,
+plt.gca().text(1.1, 0.0, '$\it{\mathbf{C}}\it{\mathbf{w}}$', transform=plt.gca().transAxes, fontsize=14,
         verticalalignment='center',horizontalalignment='center',color='xkcd:dark grey')
 
 
@@ -293,7 +283,7 @@ plt.scatter(
     x       = ret[:,0],
     y       = ret[:,1],
     color   =  color_values_directional,
-    s       = 3,
+    s       = 5,
     zorder  = 10)
 
 # Set equal axis aspect
@@ -301,7 +291,7 @@ plt.axis([-3, 3, -3, 3])
 plt.gca().set_aspect('equal', adjustable='box')
 
 # Label the subplot
-plt.title(r'$\bf{B}$: non-Gaussian target density $p$', loc='left', fontsize = titlesize)
+plt.title(r'$\bf{B}$: non-Gaussian target density $p$', loc='left')
 
 # Remove all axis ticks
 plt.tick_params(left=False,
@@ -368,8 +358,8 @@ plt.contour(x,y,z,levels=10,cmap='Greys')
 plt.scatter(
     x       = ret[:,0],
     y       = ret[:,1],
-    color   = color_values_directional,
-    s       = 3,
+    color   =  color_values_directional,
+    s       = 5,
     zorder  = 10)
 
 # Set equal axis aspect
@@ -377,7 +367,7 @@ plt.axis([-3, 3, -3, 3])
 plt.gca().set_aspect('equal', adjustable='box')
 
 # Label the subplot
-plt.title(r'$\bf{C}$: Gaussian target density $p$', loc='left', fontsize = titlesize)
+plt.title(r'$\bf{C}$: Gaussian target density $p$', loc='left')
 
 # Remove all axis ticks
 plt.tick_params(left=False,
@@ -387,5 +377,5 @@ plt.tick_params(left=False,
 
 
 # Save the figure, declare victory. Have a coffee. ----------------------------
-plt.savefig('map_example'+addendum+'.png',dpi=600,bbox_inches='tight')
-plt.savefig('map_example'+addendum+'.pdf',dpi=600,bbox_inches='tight')
+plt.savefig('map_example.png',dpi=600,bbox_inches='tight')
+plt.savefig('map_example.pdf',dpi=600,bbox_inches='tight')

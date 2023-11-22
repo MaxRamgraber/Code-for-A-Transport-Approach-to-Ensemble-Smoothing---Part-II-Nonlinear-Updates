@@ -6,33 +6,17 @@ import copy
 import pickle
 from matplotlib.patches import Patch
 from matplotlib.lines import Line2D
-import matplotlib
 
-use_latex   = False
+plt.rc('font', family='serif') # sans-serif
+plt.rc('text', usetex=True)
 
-if use_latex:
-    
-    from matplotlib import rc
-    rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
-    rc('text', usetex=True)
-    titlesize   = 14
-    labelsize   = 12
-    addendum    = "_latex"
-    pad         = -20
-    bigsize     = 22
-    smallsize   = 10
-    tinysize    = 8
-    
-else:
-    
-    matplotlib.style.use('default')
-    titlesize   = 12
-    labelsize   = 10
-    addendum    = ""
-    pad         = -25
-    bigsize     = 18
-    smallsize   = 8
-    tinysize    = 6
+plt.rcParams['text.latex.preamble'] = [
+       r'\usepackage{siunitx}',   # i need upright \micro symbols, but you need...
+       r'\sisetup{detect-all}',   # ...this to force siunitx to actually use your fonts
+       r'\usepackage{helvet}',    # set the normal font here
+       r'\usepackage{sansmath}',  # load up the sansmath so that math -> helvet
+       r'\sansmath'               # <- tricky! -- gotta actually tell tex to use!
+]  
     
 plt.close('all')
 
@@ -49,7 +33,7 @@ plt.figure(figsize=(12,6))
 gs  = GridSpec(nrows = 2, ncols = 2, height_ratios=[1,1], hspace = 0.1, wspace = 0.3)
 
 
-plt.title(r'$\bf{A}$: Lorenz-63 smoothing results', loc='left', fontsize=titlesize)
+plt.title(r'$\bf{A}$: Lorenz-63 smoothing results', loc='left', fontsize=11)
 
 labels      = [
     'backward smoother (single-pass)',
@@ -131,23 +115,23 @@ xdif    = np.abs(np.diff(xpos))
 ydif    = np.abs(np.diff(ypos))
 
 plt.text(xpos[0],ypos[1]+0.1,r'$\bf{A}$: fixed-lag smoothing (multi-pass backwards smoother)', 
-    transform=plt.gca().transAxes, fontsize=titlesize,color='xkcd:dark grey',
+    transform=plt.gca().transAxes, fontsize=10,color='xkcd:grey',
     verticalalignment='top',horizontalalignment='left')
 
 plt.gca().annotate('', xy=(xpos[0], ypos[0]), xycoords='axes fraction', xytext=(xpos[0], ypos[1]), 
-                    arrowprops=dict(color='xkcd:grey',headlength=1,headwidth=0,width=1))
+                    arrowprops=dict(color='xkcd:silver',headlength=1,headwidth=0,width=1))
 
 plt.gca().annotate('', xy=(xpos[0], ypos[1]), xycoords='axes fraction', xytext=(xpos[1], ypos[1]), 
-                    arrowprops=dict(color='xkcd:grey',headlength=1,headwidth=0,width=1))
+                    arrowprops=dict(color='xkcd:silver',headlength=1,headwidth=0,width=1))
 
 plt.gca().annotate('', xy=(xpos[1], ypos[1]), xycoords='axes fraction', xytext=(xpos[1], ypos[0]), 
-                    arrowprops=dict(color='xkcd:grey',headlength=1,headwidth=0,width=1))
+                    arrowprops=dict(color='xkcd:silver',headlength=1,headwidth=0,width=1))
 
 plt.gca().annotate('', xy=(xpos[1], ypos[0]), xycoords='axes fraction', xytext=(xpos[0], ypos[0]), 
-                    arrowprops=dict(color='xkcd:grey',headlength=1,headwidth=0,width=1))
+                    arrowprops=dict(color='xkcd:silver',headlength=1,headwidth=0,width=1))
 
 
-plt.ylabel("time-averaged error quantiles",fontsize=labelsize)
+plt.ylabel("time-averaged error quantiles")
 
 
 
@@ -155,7 +139,7 @@ plt.fill(
     list(np.arange(101)) + list(np.flip(np.arange(101))),
     list(dct_lag_quantiles['EnRTS_mp'][0][:,1]) + list(np.flip(dct_lag_quantiles['EnRTS_mp'][0][:,2])),
     color       = "xkcd:cerulean",
-    label       = "$25$$\%$ - $75$$\%$ quantile ($N = 50$)",
+    label       = "$25$\% - $75$\% quantile ($N = 50$)",
     alpha       = 0.5,
     edgecolor   = "None",
     zorder      = -1)
@@ -164,7 +148,7 @@ plt.fill(
     list(np.arange(101)) + list(np.flip(np.arange(101))),
     list(dct_lag_quantiles['EnRTS_mp'][0][:,0]) + list(np.flip(dct_lag_quantiles['EnRTS_mp'][0][:,1])),
     color       = "xkcd:cerulean",
-    label       = "$5$$\%$ - $95$$\%$ quantile ($N = 50$)",
+    label       = "$5$\% - $95$\% quantile ($N = 50$)",
     alpha       = 0.2,
     edgecolor   = "None",
     zorder      = -2)
@@ -173,7 +157,7 @@ plt.plot(
     np.arange(101),
     dct_lag_quantiles['EnRTS_mp'][0][:,2],
     color       = "xkcd:cerulean",
-    label       = "$50$$\%$ quantile ($N = 50$)",
+    label       = "$50$\% quantile ($N = 50$)",
     alpha       = 1,
     zorder      = 0)
 
@@ -193,25 +177,23 @@ plt.fill(
     edgecolor   = "None",
     zorder      = -2)
 
-plt.legend(frameon=False, fontsize = labelsize)
+plt.legend(frameon=False)
 
 plt.gca().set_xticklabels([])
 
-plt.xticks(fontsize = labelsize)
-plt.yticks(fontsize = labelsize)
 
 
 plt.subplot(gs[1,0])
 
-plt.ylabel("time-averaged error quantiles", fontsize = labelsize)
-plt.xlabel("smoothing lag", fontsize = labelsize)
+plt.ylabel("time-averaged error quantiles")
+plt.xlabel("smoothing lag")
 
 
 plt.fill(
     list(np.arange(101)) + list(np.flip(np.arange(101))),
     list(dct_lag_quantiles['EnRTS_mp'][-1][:,1]) + list(np.flip(dct_lag_quantiles['EnRTS_mp'][-1][:,2])),
     color       = "xkcd:cerulean",
-    label       = "$25$$\%$ - $75$$\%$ quantile ($N = 1000$)",
+    label       = "$25$\% - $75$\% quantile ($N = 1000$)",
     alpha       = 0.5,
     edgecolor   = "None",
     zorder      = -4)
@@ -220,7 +202,7 @@ plt.fill(
     list(np.arange(101)) + list(np.flip(np.arange(101))),
     list(dct_lag_quantiles['EnRTS_mp'][-1][:,0]) + list(np.flip(dct_lag_quantiles['EnRTS_mp'][-1][:,1])),
     color       = "xkcd:cerulean",
-    label       = "$5$$\%$ - $95$$\%$ quantile ($N = 1000$)",
+    label       = "$5$\% - $95$\% quantile ($N = 1000$)",
     alpha       = 0.2,
     edgecolor   = "None",
     zorder      = -5)
@@ -229,7 +211,7 @@ plt.plot(
     np.arange(101),
     dct_lag_quantiles['EnRTS_mp'][-1][:,2],
     color       = "xkcd:cerulean",
-    label       = "$50$$\%$ quantile ($N = 1000$)",
+    label       = "$50$\% quantile ($N = 1000$)",
     alpha       = 1,
     zorder      = -3)
 
@@ -249,10 +231,8 @@ plt.fill(
     edgecolor   = "None",
     zorder      = -5)
 
-plt.legend(frameon=False, fontsize = labelsize)
+plt.legend(frameon=False)
 
-plt.xticks(fontsize = labelsize)
-plt.yticks(fontsize = labelsize)
 
 
 plt.subplot(gs[0,1])
@@ -265,22 +245,22 @@ plt.subplot(gs[0,1])
 # ydif    = np.abs(np.diff(ypos))
 
 plt.text(xpos[0],ypos[1]+0.1,r'$\bf{B}$: fixed-lag smoothing (joint-analysis smoother)', 
-    transform=plt.gca().transAxes, fontsize=titlesize,color='xkcd:dark grey',
+    transform=plt.gca().transAxes, fontsize=10,color='xkcd:grey',
     verticalalignment='top',horizontalalignment='left')
 
 plt.gca().annotate('', xy=(xpos[0], ypos[0]), xycoords='axes fraction', xytext=(xpos[0], ypos[1]), 
-                    arrowprops=dict(color='xkcd:grey',headlength=1,headwidth=0,width=1))
+                    arrowprops=dict(color='xkcd:silver',headlength=1,headwidth=0,width=1))
 
 plt.gca().annotate('', xy=(xpos[0], ypos[1]), xycoords='axes fraction', xytext=(xpos[1], ypos[1]), 
-                    arrowprops=dict(color='xkcd:grey',headlength=1,headwidth=0,width=1))
+                    arrowprops=dict(color='xkcd:silver',headlength=1,headwidth=0,width=1))
 
 plt.gca().annotate('', xy=(xpos[1], ypos[1]), xycoords='axes fraction', xytext=(xpos[1], ypos[0]), 
-                    arrowprops=dict(color='xkcd:grey',headlength=1,headwidth=0,width=1))
+                    arrowprops=dict(color='xkcd:silver',headlength=1,headwidth=0,width=1))
 
 plt.gca().annotate('', xy=(xpos[1], ypos[0]), xycoords='axes fraction', xytext=(xpos[0], ypos[0]), 
-                    arrowprops=dict(color='xkcd:grey',headlength=1,headwidth=0,width=1))
+                    arrowprops=dict(color='xkcd:silver',headlength=1,headwidth=0,width=1))
 
-plt.ylabel("time-averaged error quantiles", fontsize = labelsize)
+plt.ylabel("time-averaged error quantiles")
 # plt.xlabel("smoothing lag")
 
 
@@ -288,7 +268,7 @@ plt.fill(
     list(np.arange(101)) + list(np.flip(np.arange(101))),
     list(dct_lag_quantiles['EnKS'][0][:,1]) + list(np.flip(dct_lag_quantiles['EnKS'][0][:,2])),
     color       = "xkcd:orangish red",
-    label       = "$25$$\%$ - $75$$\%$ quantile ($N = 50$)",
+    label       = "$25$\% - $75$\% quantile ($N = 50$)",
     alpha       = 0.5,
     edgecolor   = "None",
     zorder      = -1)
@@ -297,7 +277,7 @@ plt.fill(
     list(np.arange(101)) + list(np.flip(np.arange(101))),
     list(dct_lag_quantiles['EnKS'][0][:,0]) + list(np.flip(dct_lag_quantiles['EnKS'][0][:,1])),
     color       = "xkcd:orangish red",
-    label       = "$5$$\%$ - $95$$\%$ quantile ($N = 50$)",
+    label       = "$5$\% - $95$\% quantile ($N = 50$)",
     alpha       = 0.2,
     edgecolor   = "None",
     zorder      = -2)
@@ -306,7 +286,7 @@ plt.plot(
     np.arange(101),
     dct_lag_quantiles['EnKS'][0][:,2],
     color       = "xkcd:orangish red",
-    label       = "$50$$\%$ quantile ($N = 50$)",
+    label       = "$50$\% quantile ($N = 50$)",
     alpha       = 1,
     zorder      = 0)
 
@@ -326,12 +306,9 @@ plt.fill(
     edgecolor   = "None",
     zorder      = -2)
 
-plt.legend(frameon=False, fontsize = labelsize)
+plt.legend(frameon=False)
 
 plt.gca().set_xticklabels([])
-
-plt.xticks(fontsize = labelsize)
-plt.yticks(fontsize = labelsize)
 
 
 
@@ -342,7 +319,7 @@ plt.fill(
     list(np.arange(101)) + list(np.flip(np.arange(101))),
     list(dct_lag_quantiles['EnKS'][-1][:,1]) + list(np.flip(dct_lag_quantiles['EnKS'][-1][:,2])),
     color       = "xkcd:orangish red",
-    label       = "$25$$\%$ - $75$$\%$ quantile ($N = 1000$)",
+    label       = "$25$\% - $75$\% quantile ($N = 1000$)",
     alpha       = 0.5,
     edgecolor   = "None",
     zorder      = -4)
@@ -351,7 +328,7 @@ plt.fill(
     list(np.arange(101)) + list(np.flip(np.arange(101))),
     list(dct_lag_quantiles['EnKS'][-1][:,0]) + list(np.flip(dct_lag_quantiles['EnKS'][-1][:,1])),
     color       = "xkcd:orangish red",
-    label       = "$5$$\%$ - $95$$\%$ quantile ($N = 1000$)",
+    label       = "$5$\% - $95$\% quantile ($N = 1000$)",
     alpha       = 0.2,
     edgecolor   = "None",
     zorder      = -5)
@@ -360,7 +337,7 @@ plt.plot(
     np.arange(101),
     dct_lag_quantiles['EnKS'][-1][:,2],
     color       = "xkcd:orangish red",
-    label       = "$50$$\%$ quantile ($N = 1000$)",
+    label       = "$50$\% quantile ($N = 1000$)",
     alpha       = 1,
     zorder      = -3)
 
@@ -380,13 +357,10 @@ plt.fill(
     edgecolor   = "None",
     zorder      = -5)
 
-plt.legend(frameon=False, fontsize = labelsize)
+plt.legend(frameon=False)
 
-plt.ylabel("time-averaged error quantiles", fontsize = labelsize)
-plt.xlabel("smoothing lag", fontsize = labelsize)
+plt.ylabel("time-averaged error quantiles")
+plt.xlabel("smoothing lag")
 
-plt.xticks(fontsize = labelsize)
-plt.yticks(fontsize = labelsize)
-
-plt.savefig('multipass_lag_quantiles'+addendum+'.png',dpi=600,bbox_inches='tight')
-plt.savefig('multipass_lag_quantiles'+addendum+'.pdf',dpi=600,bbox_inches='tight')
+plt.savefig('multipass_lag_quantiles.png',dpi=600,bbox_inches='tight')
+plt.savefig('multipass_lag_quantiles.pdf',dpi=600,bbox_inches='tight')

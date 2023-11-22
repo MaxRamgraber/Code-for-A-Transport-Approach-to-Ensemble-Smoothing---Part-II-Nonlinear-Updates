@@ -1,32 +1,19 @@
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
+import turbo_colormap
 
-use_latex   = False
+plt.rc('font', family='serif') # sans-serif
+plt.rc('text', usetex=True)
 
-if use_latex:
-    
-    from matplotlib import rc
-    rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
-    rc('text', usetex=True)
-    titlesize   = 14
-    labelsize   = 12
-    addendum    = "_latex"
-    pad         = -20
-    bigsize     = 22
-    smallsize   = 10
-    
-else:
-    
-    matplotlib.style.use('default')
-    titlesize   = 12
-    labelsize   = 10
-    addendum    = ""
-    pad         = -25
-    bigsize     = 18
-    smallsize   = 8
+plt.rcParams['text.latex.preamble'] = [
+       r'\usepackage{siunitx}',   # i need upright \micro symbols, but you need...
+       r'\sisetup{detect-all}',   # ...this to force siunitx to actually use your fonts
+       r'\usepackage{helvet}',    # set the normal font here
+       r'\usepackage{sansmath}',  # load up the sansmath so that math -> helvet
+       r'\sansmath'               # <- tricky! -- gotta actually tell tex to use!
+]  
 
-cmap = matplotlib.cm.get_cmap('turbo')
 cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", 
     ["xkcd:midnight blue",
      "xkcd:sky blue",
@@ -53,16 +40,16 @@ cb1 = matplotlib.colorbar.ColorbarBase(
     norm        = norm,
     orientation = 'horizontal')
 
-cb1.set_label("algorithm progress", labelpad=-8,fontsize = titlesize)
+cb1.set_label("algorithm progress", labelpad=-8,fontsize = 12)
 
 plt.gca().xaxis.set_ticks_position('top')
 plt.gca().xaxis.set_label_position('top')
-cb1.ax.set_xticklabels(['start', 'end'],fontsize = titlesize)  # horizontal colorbar
+cb1.ax.set_xticklabels(['start', 'end'],fontsize = 12)  # horizontal colorbar
 
 
-plt.gca().annotate('', xy=(0.1, 1.5), xycoords='axes fraction', xytext=(0.375, 1.5), 
+plt.gca().annotate('', xy=(0.1, 1.5), xycoords='axes fraction', xytext=(0.425, 1.5), 
             arrowprops=dict(arrowstyle = '-',color='xkcd:dark grey'))
-plt.gca().annotate('', xy=(0.9, 1.5), xycoords='axes fraction', xytext=(0.625, 1.5), 
+plt.gca().annotate('', xy=(0.9, 1.5), xycoords='axes fraction', xytext=(0.575, 1.5), 
             arrowprops=dict(arrowstyle = '->',color='xkcd:dark grey'))
 
 xpos    = np.column_stack((
@@ -104,7 +91,7 @@ plt.fill(2 + circ_x, 0 + circ_y, color=cmap(0.3), edgecolor="None")
 plt.gca().annotate('', xy=(2.15, 0), xytext=(0.85, 0), 
         arrowprops=dict(arrowstyle = '->',color='xkcd:dark grey'))
 
-plt.gca().text(3, 0, "filtering forecast", ha="left", va="center",zorder=10,color="k",fontsize=labelsize)
+plt.gca().text(3, 0, "filtering forecast", ha="left", va="center",zorder=10,color="k",fontsize=10)
 
 
 plt.fill(12 + triang_x, 0.5 + triang_y, color=cmap(0.55), edgecolor="None")
@@ -114,7 +101,7 @@ plt.fill(12 + circ_x, -0.5 + circ_y, color=cmap(0.5), edgecolor="None")
 plt.gca().annotate('', xy=(12, 0.65), xytext=(12, -0.65), 
         arrowprops=dict(arrowstyle = '->',color='xkcd:dark grey'))
 
-plt.gca().text(13, 0, "filtering update", ha="left", va="center",zorder=10,color="k",fontsize=labelsize)
+plt.gca().text(13, 0, "filtering update", ha="left", va="center",zorder=10,color="k",fontsize=10)
 
 plt.fill(21 + np.asarray(list(triang_x[:2])+list(triang_x[1:]+1)), 0.5 + np.asarray(list(triang_y[:2])+list(triang_y[1:])), color=cmap(0.55), edgecolor="None")
 
@@ -123,7 +110,7 @@ plt.fill(22 + circ_x, -0.5 + circ_y, color=cmap(0.5), edgecolor="None")
 plt.gca().annotate('', xy=(22, 0.65), xytext=(22, -0.65), 
         arrowprops=dict(arrowstyle = '->',color='xkcd:dark grey'))
 
-plt.gca().text(23, 0, "dense \n"+"smoothing update", ha="left", va="center",zorder=10,color="k",fontsize=labelsize)
+plt.gca().text(23, 0, "dense \n"+"smoothing update", ha="left", va="center",zorder=10,color="k",fontsize=10)
 
 
 plt.fill(32 + square_x, 0.5 + square_y, color=cmap(0.75), edgecolor="None")
@@ -140,7 +127,7 @@ plt.gca().annotate('', xy=(33.15, 0.5), xytext=(31.85, 0.5),
 plt.gca().annotate('', xy=(33.15, -0.5), xytext=(31.85, -0.5), 
         arrowprops=dict(arrowstyle = '->',color='xkcd:dark grey'))
 
-plt.gca().text(34, 0, "forward \n"+"smoothing update", ha="left", va="center",zorder=10,color="k",fontsize=labelsize)
+plt.gca().text(34, 0, "forward \n"+"smoothing update", ha="left", va="center",zorder=10,color="k",fontsize=10)
 
 
 
@@ -159,7 +146,7 @@ plt.gca().annotate('', xy=(42.85, 0.5), xytext=(44.15, 0.5),
 plt.gca().annotate('', xy=(42.85, -0.5), xytext=(44.15, -0.5), 
         arrowprops=dict(arrowstyle = '->',color='xkcd:dark grey'))
 
-plt.gca().text(45, 0, "backward \n"+"smoothing update", ha="left", va="center",zorder=10,color="k",fontsize=labelsize)
+plt.gca().text(45, 0, "backward \n"+"smoothing update", ha="left", va="center",zorder=10,color="k",fontsize=10)
 
 
 
@@ -220,15 +207,15 @@ for t in np.arange(1,T,1):
         
         plt.fill(trapezoid[:,0], trapezoid[:,1], color=cmap(counter/maxcounter), edgecolor="None")
 
-plt.title(r'$\bf{A}$: dense smoother', loc='left', fontsize=titlesize)
+plt.title(r'$\bf{A}$: dense smoother', loc='left', fontsize=12)
 plt.axis('equal')
 
-plt.ylabel('conditioned on data', labelpad=-15,fontsize = titlesize)
+plt.ylabel('conditioned on data', labelpad=-15,fontsize = 12)
 ax = plt.gca()
 ax.set_xticks([1,T-2])
 ax.set_xticklabels(['',''])
 ax.set_yticks([2,T-1])
-ax.set_yticklabels(['$\mathbf{y}_{1}^{*}$','$\mathbf{y}_{1:t}^{*}$'],fontsize = titlesize)
+ax.set_yticklabels(['$\mathbf{y}_{1}^{*}$','$\mathbf{y}_{1:t}^{*}$'],fontsize = 12)
 
 
 #%%
@@ -292,7 +279,7 @@ for t in np.arange(1,T,1):
         
         plt.fill(trapezoid[:,0], trapezoid[:,1], color=cmap(counter/maxcounter), edgecolor="None")
 
-plt.title(r'$\bf{B}$: dense smoother (fixed-lag)', loc='left', fontsize=titlesize)
+plt.title(r'$\bf{B}$: dense smoother (fixed-lag)', loc='left', fontsize=12)
 plt.axis('equal')
 
 ax = plt.gca()
@@ -366,7 +353,7 @@ for t in np.arange(1,T,1):
             
             plt.fill(s + square_x, t + 1 + square_y, color=cmap(counter/maxcounter), edgecolor="None")
     
-plt.title(r'$\bf{C}$: fixed-point smoother', loc='left', fontsize=titlesize)
+plt.title(r'$\bf{C}$: fixed-point smoother', loc='left', fontsize=12)
 plt.axis('equal')
 
 
@@ -403,16 +390,16 @@ for t in np.arange(1,T,1):
     plt.fill(t + triang_x, t + 1 + triang_y, color=cmap(counter/maxcounter), edgecolor="None")
     
 
-plt.title(r'$\bf{D}$: forward smoother', loc='left', fontsize=titlesize)
+plt.title(r'$\bf{D}$: forward smoother', loc='left', fontsize=12)
 plt.axis('equal')
 
-plt.xlabel('state block', labelpad=-10,fontsize = titlesize)
-plt.ylabel('conditioned on data', labelpad=-15,fontsize = titlesize)
+plt.xlabel('state block', labelpad=-10,fontsize = 12)
+plt.ylabel('conditioned on data', labelpad=-15,fontsize = 12)
 ax = plt.gca()
 ax.set_xticks([1,T-1])
-ax.set_xticklabels(['$\mathbf{x}_{1}$','$\mathbf{x}_{t}$'],fontsize = titlesize)
+ax.set_xticklabels(['$\mathbf{x}_{1}$','$\mathbf{x}_{t}$'],fontsize = 12)
 ax.set_yticks([2,T])
-ax.set_yticklabels(['$\mathbf{y}_{1}^{*}$','$\mathbf{y}_{1:t}^{*}$'],fontsize = titlesize)
+ax.set_yticklabels(['$\mathbf{y}_{1}^{*}$','$\mathbf{y}_{1:t}^{*}$'],fontsize = 12)
 
 # raise Exception
 
@@ -463,13 +450,13 @@ for s in np.arange(t-1,0,-1):
     
     plt.fill(s + square_x, t + 1 + square_y, color=cmap(counter/maxcounter), edgecolor="None")
 
-plt.title(r'$\bf{E}$: backward smoother (single-pass)', loc='left', fontsize=titlesize)
+plt.title(r'$\bf{E}$: backward smoother (single-pass)', loc='left', fontsize=12)
 plt.axis('equal')
 
-plt.xlabel('state block', labelpad=-10,fontsize = titlesize)
+plt.xlabel('state block', labelpad=-10,fontsize = 12)
 ax = plt.gca()
 ax.set_xticks([1,T-1])
-ax.set_xticklabels(['$\mathbf{x}_{1}$','$\mathbf{x}_{t}$'],fontsize = titlesize)
+ax.set_xticklabels(['$\mathbf{x}_{1}$','$\mathbf{x}_{t}$'],fontsize = 12)
 ax.set_yticks([2,T])
 ax.set_yticklabels(['',''])
 
@@ -526,19 +513,30 @@ for t in np.arange(1,T,1):
     
 
         
-plt.title(r'$\bf{F}$: backward smoother (multi-pass)', loc='left', fontsize=titlesize)
+plt.title(r'$\bf{F}$: backward smoother (multi-pass)', loc='left', fontsize=12)
 # plt.title('backward smoother (multi-pass)')
 plt.axis('equal')
 
-plt.xlabel('state block', labelpad=-10,fontsize = titlesize)
+plt.xlabel('state block', labelpad=-10,fontsize = 12)
 # plt.ylabel('time scubscript $s$', labelpad=-10)
 ax = plt.gca()
 ax.set_xticks([1,T-1])
-ax.set_xticklabels(['$\mathbf{x}_{1}$','$\mathbf{x}_{t}$'],fontsize = titlesize)
+ax.set_xticklabels(['$\mathbf{x}_{1}$','$\mathbf{x}_{t}$'],fontsize = 12)
 ax.set_yticks([2,T])
 ax.set_yticklabels(['',''])
 
 
-plt.savefig('smoother_types'+addendum+'.png',dpi=600,bbox_inches='tight')
-plt.savefig('smoother_types'+addendum+'.pdf',dpi=600,bbox_inches='tight')
+plt.savefig('smoother_types.png',dpi=600,bbox_inches='tight')
+plt.savefig('smoother_types.pdf',dpi=600,bbox_inches='tight')
+
+
+
+
+
+
+
+
+
+
+
 

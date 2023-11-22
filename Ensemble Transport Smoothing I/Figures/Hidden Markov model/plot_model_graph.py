@@ -1,28 +1,19 @@
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
+import turbo_colormap
 import colorsys
 
-use_latex   = True
+plt.rc('font', family='serif') # sans-serif
+plt.rc('text', usetex=True)
 
-if use_latex:
-    
-    from matplotlib import rc
-    rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
-    rc('text', usetex=True)
-    titlesize   = 14
-    labelsize   = 12
-    addendum    = "_latex"
-    pad         = -20
-    bigsize     = 22
-    
-else:
-    
-    titlesize   = 12
-    labelsize   = 10
-    addendum    = ""
-    pad         = -25
-    bigsize     = 18
+plt.rcParams['text.latex.preamble'] = [
+       r'\usepackage{siunitx}',   # i need upright \micro symbols, but you need...
+       r'\sisetup{detect-all}',   # ...this to force siunitx to actually use your fonts
+       r'\usepackage{helvet}',    # set the normal font here
+       r'\usepackage{sansmath}',  # load up the sansmath so that math -> helvet
+       r'\sansmath'               # <- tricky! -- gotta actually tell tex to use!
+]  
 
 cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", 
     ["xkcd:midnight blue",
@@ -56,11 +47,11 @@ cb1 = matplotlib.colorbar.ColorbarBase(
     norm        = norm,
     orientation = 'horizontal')
 
-cb1.set_label("algorithm progress", labelpad=-10, fontsize = labelsize)
+cb1.set_label("algorithm progress", labelpad=-10)
 
 plt.gca().xaxis.set_ticks_position('top')
 plt.gca().xaxis.set_label_position('top')
-cb1.ax.set_xticklabels(['start', 'end'], fontsize = labelsize)  # horizontal colorbar
+cb1.ax.set_xticklabels(['start', 'end'])  # horizontal colorbar
 
 plt.gca().annotate('', xy=(0.1, 1.75), xycoords='axes fraction', xytext=(0.4, 1.75), 
             arrowprops=dict(arrowstyle = '-',color='xkcd:dark grey'))
@@ -124,9 +115,9 @@ for n in range(Nnodes):
     
         plt.gca().add_patch(plt.Circle(xpos[n,:], 0.3, color=cmap(colorcounter/colorcounter_max)))
         if n != Nnodes-1:
-            plt.gca().text(xpos[n,0], xpos[n,1], '$x'+labels[n], ha="center", va="center",zorder=10,color=textcolor,fontsize=titlesize)
+            plt.gca().text(xpos[n,0], xpos[n,1], '$x'+labels[n], ha="center", va="center",zorder=10,color=textcolor,fontsize=14)
         else:
-            plt.gca().text(xpos[n,0], xpos[n,1], '$x'+labels[n], ha="center", va="center",zorder=10,color=[0.8,0.8,0.8],fontsize=titlesize)
+            plt.gca().text(xpos[n,0], xpos[n,1], '$x'+labels[n], ha="center", va="center",zorder=10,color=[0.8,0.8,0.8],fontsize=14)
         
         if n != 0:
             plt.arrow(
@@ -153,9 +144,9 @@ for n in range(Nnodes):
         colorcounter += 1
         plt.gca().add_patch(plt.Circle(ypos[n,:], 0.3, color=cmap(colorcounter/colorcounter_max)))
         if n != Nnodes-1:
-            plt.gca().text(ypos[n,0], ypos[n,1], '$y'+labels[n], ha="center", va="center",zorder=10,color=textcolor,fontsize=titlesize)
+            plt.gca().text(ypos[n,0], ypos[n,1], '$y'+labels[n], ha="center", va="center",zorder=10,color=textcolor,fontsize=14)
         else:
-            plt.gca().text(ypos[n,0], ypos[n,1], '$y'+labels[n], ha="center", va="center",zorder=10,color=[0.8,0.8,0.8],fontsize=titlesize)
+            plt.gca().text(ypos[n,0], ypos[n,1], '$y'+labels[n], ha="center", va="center",zorder=10,color=[0.8,0.8,0.8],fontsize=14)
         
         plt.arrow(
             pos[n,0],
@@ -203,5 +194,5 @@ plt.tick_params(left=False,
 
 
 # Save the figure
-plt.savefig('Hidden_Markov_model'+addendum+'.png',dpi=600,bbox_inches='tight')
-plt.savefig('Hidden_Markov_model'+addendum+'.pdf',dpi=600,bbox_inches='tight')
+plt.savefig('Hidden_Markov_model.png',dpi=600,bbox_inches='tight')
+plt.savefig('Hidden_Markov_model.pdf',dpi=600,bbox_inches='tight')

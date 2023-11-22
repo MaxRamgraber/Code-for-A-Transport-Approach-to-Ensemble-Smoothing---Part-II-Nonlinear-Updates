@@ -8,31 +8,9 @@ from matplotlib.lines import Line2D
 
 plt.close('all')
 
-use_latex   = False
-
-if use_latex:
-    
-    from matplotlib import rc
-    rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
-    rc('text', usetex=True)
-    titlesize   = 14
-    labelsize   = 12
-    addendum    = "_latex"
-    pad         = -20
-    bigsize     = 22
-    smallsize   = 10
-    tinysize    = 8
-    
-else:
-    
-    matplotlib.style.use('default')
-    titlesize   = 12
-    labelsize   = 10
-    addendum    = ""
-    pad         = -25
-    bigsize     = 18
-    smallsize   = 8
-    tinysize    = 6
+from matplotlib import rc
+rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
+rc('text', usetex=True)
 
 # Then we prepare a new colormap, mainly for cosmetic purposes.
 cmap    = "turbo"
@@ -83,9 +61,8 @@ for (i,N) in enumerate(Ns):
         plt.plot(np.arange(T)+1,subdct[N][alg]['mean_RMSE'], color=colors[k], label=algs_titles[k], linestyle=styles[k])
     plt.xlim((0.5,T+0.5))
     plt.ylim((subdct['mean_RMSE min'], subdct['mean_RMSE max']))
-    plt.ylabel('RMSE in ensemble mean',fontsize=labelsize) # posterior mean$') #: $|\bar{X} - E[X|y^*]\|_2$')
-    plt.xlabel('time steps',fontsize=labelsize) # posterior mean$') #: $|\bar{X} - E[X|y^*]\|_2$')
-    plt.title('$N = '+str(N)+'$',fontsize=titlesize)
+    plt.ylabel('Error in ensemble mean') # posterior mean$') #: $|\bar{X} - E[X|y^*]\|_2$')
+    plt.title('$N = '+str(N)+'$')
     if i==1:
         plt.legend(
             ncol            = 2,
@@ -94,8 +71,6 @@ for (i,N) in enumerate(Ns):
             frameon         = False,
             fancybox        = False, 
             shadow          = False,
-            fontsize        = tinysize)
-        
-plt.subplots_adjust(bottom=0.2)
+            fontsize        = 8)
 
-plt.savefig('smoothing_mean'+addendum+'.pdf',dpi=600,bbox_inches='tight')
+plt.savefig('smoothing_mean.pdf',dpi=600,bbox_inches='tight')
