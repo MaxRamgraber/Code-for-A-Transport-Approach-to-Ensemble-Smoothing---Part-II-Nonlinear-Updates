@@ -52,8 +52,8 @@ colors      = [
     'xkcd:orangish red']
 markers     = ['o','x','v','o','x','v']
 
-plt.figure(figsize=(12,8))
-gs  = GridSpec(nrows = 2, ncols = 2, height_ratios=[1,1], hspace = 0.4)
+plt.figure(figsize=(12,12))
+gs  = GridSpec(nrows = 3, ncols = 4, hspace = 0.4)
 
 plt.subplot(gs[0,:])
 
@@ -71,6 +71,12 @@ linestyles  = [
     '--',
     '--',
     '--']
+
+
+# dct_EnRTS = pickle.load(open("EnRTS_smoother_N=1000.p","rb"))
+# dct_TM_BWS = pickle.load(open("TM_BW_smoother_N=1000.p","rb"))
+
+# raise Exception
 
 # dct_res     = {
 #     'TM_BW'     : [],
@@ -96,6 +102,8 @@ dct_lag_quantiles   = {
     'EnRTS_mp'  : [],
     'EnKS'      : [],
     'EnTF'      : []}
+
+# """
 
 for N in Ns:
     
@@ -209,6 +217,8 @@ for idx,strng in enumerate(['EnRTS','EnRTS_mp','EnKS']): #enumerate(['TM_BW','TM
         alpha       = 0.25,
         edgecolor   = "None",
         zorder      = 5)
+    
+# """
     
  
 plt.legend(loc='upper right',frameon=False, fontsize = labelsize)
@@ -357,6 +367,232 @@ plt.legend(handles=legend_elements, loc='upper right',frameon=False,ncol = 2, fo
 plt.xlabel("time steps", fontsize = labelsize)
 plt.ylabel("ensemble error quantiles", fontsize = labelsize)
 
-plt.savefig('results_L63_linear'+addendum+'.png',dpi=600,bbox_inches='tight')
-plt.savefig('results_L63_linear'+addendum+'.pdf',dpi=600,bbox_inches='tight')
+# Get the limits
+xlims = plt.gca().get_xlim()
+plt.gca().set_xlim(xlims)
+ylims = plt.gca().get_ylim()
+plt.gca().set_ylim(ylims)
+
+snapshots = [460,490,506,536]
+
+
+# Draw an annotation arrow
+plt.gca().annotate('', 
+    xy=((snapshots[0]-xlims[0])/(xlims[1]-xlims[0]), 0), 
+    xycoords='axes fraction', 
+    xytext=(0.125, -0.4), 
+    arrowprops=dict(arrowstyle = '-',color='xkcd:dark grey'))
+plt.gca().annotate('', 
+    xy=((snapshots[0]-xlims[0])/(xlims[1]-xlims[0]), (q50[snapshots[0]-450]-ylims[0])/(ylims[1]-ylims[0])), 
+    xycoords='axes fraction', 
+    xytext=((snapshots[0]-xlims[0])/(xlims[1]-xlims[0]), 0), 
+    arrowprops=dict(arrowstyle = '-',color='xkcd:dark grey'))
+
+plt.gca().annotate('', 
+    xy=((snapshots[1]-xlims[0])/(xlims[1]-xlims[0]), 0), 
+    xycoords='axes fraction', 
+    xytext=(0.375, -0.4), 
+    arrowprops=dict(arrowstyle = '-',color='xkcd:dark grey'))
+plt.gca().annotate('', 
+    xy=((snapshots[1]-xlims[0])/(xlims[1]-xlims[0]), (q50[snapshots[1]-450]-ylims[0])/(ylims[1]-ylims[0])), 
+    xycoords='axes fraction', 
+    xytext=((snapshots[1]-xlims[0])/(xlims[1]-xlims[0]), 0), 
+    arrowprops=dict(arrowstyle = '-',color='xkcd:dark grey'))
+
+plt.gca().annotate('', 
+    xy=((snapshots[2]-xlims[0])/(xlims[1]-xlims[0]), 0), 
+    xycoords='axes fraction', 
+    xytext=(0.625, -0.4), 
+    arrowprops=dict(arrowstyle = '-',color='xkcd:dark grey'))
+plt.gca().annotate('', 
+    xy=((snapshots[2]-xlims[0])/(xlims[1]-xlims[0]), (q50[snapshots[2]-450]-ylims[0])/(ylims[1]-ylims[0])), 
+    xycoords='axes fraction', 
+    xytext=((snapshots[2]-xlims[0])/(xlims[1]-xlims[0]), 0), 
+    arrowprops=dict(arrowstyle = '-',color='xkcd:dark grey'))
+
+plt.gca().annotate('', 
+    xy=((snapshots[3]-xlims[0])/(xlims[1]-xlims[0]), 0), 
+    xycoords='axes fraction', 
+    xytext=(0.875, -0.4), 
+    arrowprops=dict(arrowstyle = '-',color='xkcd:dark grey'))
+plt.gca().annotate('', 
+    xy=((snapshots[3]-xlims[0])/(xlims[1]-xlims[0]), (q50[snapshots[3]-450]-ylims[0])/(ylims[1]-ylims[0])), 
+    xycoords='axes fraction', 
+    xytext=((snapshots[3]-xlims[0])/(xlims[1]-xlims[0]), 0), 
+    arrowprops=dict(arrowstyle = '-',color='xkcd:dark grey'))
+
+
+
+
+#%%
+
+# Plot Lorenz-63 snapshots
+
+def lorenz_dynamics(t, Z, beta=8/3, rho=28, sigma=10):
+    
+    if len(Z.shape) == 1: # Only one particle
+    
+        dZ1ds   = - sigma*Z[0] + sigma*Z[1]
+        dZ2ds   = - Z[0]*Z[2] + rho*Z[0] - Z[1]
+        dZ3ds   = Z[0]*Z[1] - beta*Z[2]
+        
+        dyn     = np.asarray([dZ1ds, dZ2ds, dZ3ds])
+        
+    else:
+        
+        dZ1ds   = - sigma*Z[...,0] + sigma*Z[...,1]
+        dZ2ds   = - Z[...,0]*Z[...,2] + rho*Z[...,0] - Z[...,1]
+        dZ3ds   = Z[...,0]*Z[...,1] - beta*Z[...,2]
+
+        dyn     = np.column_stack((dZ1ds, dZ2ds, dZ3ds))
+
+    return dyn
+
+# Finds value of y for a given x using step size h
+# and initial value y0 at x0.
+def rk4(Z,fun,t=0,dt=1,nt=1):#(x0, y0, x, h):
+    
+    """
+    Parameters
+        t       : initial time
+        Z       : initial states
+        fun     : function to be integrated
+        dt      : time step length
+        nt      : number of time steps
+    
+    """
+    
+    # Prepare array for use
+    if len(Z.shape) == 1: # We have only one particle, convert it to correct format
+        Z       = Z[np.newaxis,:]
+        
+    # Go through all time steps
+    for i in range(nt):
+        
+        # Calculate the RK4 values
+        k1  = fun(t + i*dt,           Z);
+        k2  = fun(t + i*dt + 0.5*dt,  Z + dt/2*k1);
+        k3  = fun(t + i*dt + 0.5*dt,  Z + dt/2*k2);
+        k4  = fun(t + i*dt + dt,      Z + dt*k3);
+    
+        # Update next value
+        Z   += dt/6*(k1 + 2*k2 + 2*k3 + k4)
+    
+    return Z
+
+
+import scipy.stats
+D   = 3
+T = 4000
+
+# Create the array for the synthetic reference
+attractor         = np.zeros((T,1,D))
+
+# Initiate it with standard Gaussian samples
+attractor[0,0,:]  = scipy.stats.norm.rvs(size=3)
+
+# Simulate the spinup and simulation period
+for t in np.arange(0,T-1,1):
+     
+    # Make a Lorenz forecast
+    attractor[t+1,:,:] = rk4(
+        Z           = copy.copy(attractor[t,:,:]),
+        fun         = lorenz_dynamics,
+        t           = 0,
+        dt          = 0.01,
+        nt          = 2)
+    
+# Remove the unnecessary particle index
+attractor     = attractor[:,0,:]
+    
+# Discard the spinup
+attractor     = attractor[1000:,:]
+
+
+
+ax = plt.subplot(gs[2,0], projection='3d')
+
+ax.plot3D(
+    attractor[:,0], 
+    attractor[:,1], 
+    attractor[:,2], 
+    'gray',
+    alpha = 0.5)
+
+ax.scatter3D(
+    dct_TM_BWS['synthetic_truth'][snapshots[0],0],
+    dct_TM_BWS['synthetic_truth'][snapshots[0],1],
+    dct_TM_BWS['synthetic_truth'][snapshots[0],2],
+    marker = "x",
+    color = "red")
+
+
+
+
+ax = plt.subplot(gs[2,1], projection='3d')
+
+ax.plot3D(
+    attractor[:,0], 
+    attractor[:,1], 
+    attractor[:,2], 
+    'gray',
+    alpha = 0.5)
+
+ax.scatter3D(
+    dct_TM_BWS['synthetic_truth'][snapshots[1],0],
+    dct_TM_BWS['synthetic_truth'][snapshots[1],1],
+    dct_TM_BWS['synthetic_truth'][snapshots[1],2],
+    marker = "x",
+    color = "red")
+
+
+
+ax = plt.subplot(gs[2,2], projection='3d')
+
+ax.plot3D(
+    attractor[:,0], 
+    attractor[:,1], 
+    attractor[:,2], 
+    'gray',
+    alpha = 0.5)
+
+ax.scatter3D(
+    dct_TM_BWS['synthetic_truth'][snapshots[2],0],
+    dct_TM_BWS['synthetic_truth'][snapshots[2],1],
+    dct_TM_BWS['synthetic_truth'][snapshots[2],2],
+    marker = "x",
+    color = "red")
+
+
+
+ax = plt.subplot(gs[2,3], projection='3d')
+
+ax.plot3D(
+    attractor[:,0], 
+    attractor[:,1], 
+    attractor[:,2], 
+    'gray',
+    alpha = 0.5)
+
+ax.scatter3D(
+    dct_TM_BWS['synthetic_truth'][snapshots[3],0],
+    dct_TM_BWS['synthetic_truth'][snapshots[3],1],
+    dct_TM_BWS['synthetic_truth'][snapshots[3],2],
+    marker = "x",
+    color = "red")
+
+
+
+
+
+
+
+
+
+
+
+
+
+plt.savefig('tmp_results_L63_linear'+addendum+'.png',dpi=600,bbox_inches='tight')
+plt.savefig('tmp_results_L63_linear'+addendum+'.pdf',dpi=600,bbox_inches='tight')
     

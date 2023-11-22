@@ -550,6 +550,9 @@ if __name__ == '__main__':
             # Start filtering
             for t in np.arange(0,T,1):
                 
+                # Star the timer
+                start   = time.time()
+                
                 # Sample observation predictions
                 Y_sim[t,...]    = copy.copy(X_EnKF[t,...]) + scipy.stats.norm.rvs(
                     loc     = 0,
